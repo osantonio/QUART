@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Rol - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-in fade-in duration-500 space-y-10">
+    <!-- Header: Estética Atenuada -->
+    <div class="border-b border-border/40 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30 italic">Infraestructura de
+                Gestión</span>
+            <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Crear Nuevo Rol</h1>
+            <p class="text-sm text-muted-foreground/60 font-light">Defina una nueva entidad de autorización en el
+                sistema.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('roles.listar') }}"
+                class="px-4 py-2 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario: Estructura Atenuada -->
+    <div class="border border-border/40 rounded-sm bg-background overflow-hidden">
+        <form method="POST" class="p-10 space-y-8">
+            <div class="space-y-8">
+                <div class="space-y-3">
+                    <label
+                        class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Identificador
+                        del Rol</label>
+                    <input type="text" name="name" required placeholder="ej: supervisor, auditor..."
+                        class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Descripción
+                        Operativa</label>
+                    <textarea name="description" rows="4"
+                        placeholder="Especifique las responsabilidades asociadas a este rol..."
+                        class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none resize-none"></textarea>
+                </div>
+            </div>
+
+            <!-- Footer: Acciones -->
+            <div class="pt-6 flex items-center justify-end gap-6">
+                <a href="{{ url_for('roles.listar') }}"
+                    class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                    Descartar
+                </a>
+                <button type="submit"
+                    class="px-8 py-3 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                    Registrar Rol
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

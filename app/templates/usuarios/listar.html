@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios - Admin{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+    <!-- Header -->
+    <div class="space-y-2">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-nav-muted">
+            <a href="{{ url_for('main.index') }}" class="hover:text-nav-hover transition-colors">Sistema</a>
+            <span class="text-border/40">/</span>
+            <span class="text-nav-hover/60">Gestión de Usuarios</span>
+        </nav>
+
+        <div class="flex flex-row items-stretch justify-between">
+            <div>
+                <h1 class="text-6xl font-black text-foreground/90 tracking-tighter leading-none">Usuarios</h1>
+                <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+                    Listado completo de usuarios registrados en el sistema.
+                </p>
+            </div>
+
+            <div class="flex items-start justify-end">
+                <a href="{{ url_for('main.index') }}"
+                    class="px-6 py-2.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded-sm hover:opacity-90 transition-all duration-300 inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Regresar al Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Barra de búsqueda: Integrada -->
+    <div class="relative group">
+        <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-primary">
+            <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Filtrar por nombre, identificación o alias..."
+            class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-muted-foreground/20">
+    </div>
+
+    <!-- Tabla: Estética de Lista Minimalista -->
+    <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="border-b border-border bg-muted/50">
+                    <tr>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Identidad</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Referencia ID</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Canal de Contacto</th>
+                        <th
+                            class="px-6 py-3 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Operaciones</th>
+                    </tr>
+                </thead>
+                {% if usuarios %}
+                <tbody class="divide-y divide-border/40" id="userTableBody">
+                    {% for usuario in usuarios %}
+                    <tr class="hover:bg-secondary/[0.02] transition-none user-row"
+                        data-search="{{ (usuario.nombres + ' ' + usuario.apellidos + ' ' + usuario.username + ' ' + usuario.email + ' ' + (usuario.identificacion|string))|lower }}">
+                        <td class="px-6 py-3">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="h-10 w-10 rounded bg-secondary/30 flex items-center justify-center shrink overflow-hidden border border-border">
+                                    {% if usuario.foto_perfil %}
+                                    <img src="{{ url_for('static', filename='uploads/profile_pics/' + usuario.foto_perfil) }}"
+                                        alt="{{ usuario.nombres }}" class="h-full w-full object-cover">
+                                    {% else %}
+                                    <span
+                                        class="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60">
+                                        {{ usuario.nombres[0]|upper }}{{ usuario.apellidos[0]|upper }}
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-foreground/80 tracking-tight">{{
+                                        usuario.nombres }} {{ usuario.apellidos }}</p>
+                                    <p class="text-[10px] font-medium text-muted-foreground/40">@{{ usuario.username }}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3">
+                            <span
+                                class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                                {{ usuario.identificacion }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="space-y-1">
+                                <p class="text-[11px] text-foreground/70 font-medium">{{ usuario.email }}</p>
+                                {% if usuario.telefono %}
+                                <p class="text-[10px] text-muted-foreground/40">{{ usuario.telefono }}</p>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- VER: Verde (Success) -->
+                                <a href="{{ url_for('usuarios.perfil', usuario_id=usuario.id) }}"
+                                    class="p-2.5 bg-success text-success-foreground border border-success/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-success/10"
+                                    title="Ver detalle">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                <!-- EDITAR: Amarillo (Warning) -->
+                                <a href="{{ url_for('roles.asignar_usuario', usuario_id=usuario.id) }}"
+                                    class="p-2.5 bg-warning text-warning-foreground border border-warning/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-warning/10"
+                                    title="Modificar permisos">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                        </path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty state: Atenuado -->
+        <div id="emptyState" class="hidden py-24 text-center space-y-4">
+            <div class="inline-flex p-4 bg-secondary/10 rounded-full text-muted-foreground/30">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-lg font-medium text-foreground/60">Búsqueda sin resultados</h3>
+                <p class="text-xs text-muted-foreground/40 font-light italic">No existe coincidencia en el registro para
+                    los términos indicados.</p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Sin usuarios: Atenuado -->
+    <div class="border border-border/40 rounded-sm py-32 text-center space-y-6 bg-background">
+        <div class="inline-flex p-5 bg-secondary/10 rounded-full text-muted-foreground/20">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                </path>
+            </svg>
+        </div>
+        <div class="space-y-1">
+            <h3 class="text-xl font-light text-foreground/60">Registro de Usuarios vacío</h3>
+            <p class="text-sm text-muted-foreground/40 font-light">El sistema no ha detectado identidades registradas en
+                la base de datos.</p>
+        </div>
+        <div class="pt-4">
+            <a href="{{ url_for('auth.registro') }}"
+                class="px-6 py-3 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                Iniciar Primer Registro &rarr;
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    <!-- mostrar aqui la cantidad de usuarios alineado a la derecha -->
+    <div class="flex items-center justify-end">
+        <p id="resultsCount" data-entity="usuarios" class="text-[10px] text-muted-foreground/60 font-light">
+            Mostrando {{ usuarios|length }} de {{ total_usuarios }} usuarios
+        </p>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/usuarios_listar_search.js') }}" defer></script>
+{% endblock %}

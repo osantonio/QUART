@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar sesión - Quart App{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center px-4 py-4 animate-in fade-in duration-500">
+  <div class="w-full max-w-sm">
+    <!-- Header: Atenuado -->
+    <div class="text-center mb-4 space-y-3">
+      <div
+        class="mx-auto w-10 h-10 rounded bg-foreground text-background flex items-center justify-center text-xl font-black tracking-tighter">
+        Q</div>
+      <div class="space-y-1">
+        <h1 class="text-2xl font-bold text-foreground/90 tracking-tight">Acceso al Sistema</h1>
+        <p class="text-[6px] font-bold uppercase tracking-[0.3em] text-foreground/30 italic">Autenticación Requerida
+        </p>
+      </div>
+    </div>
+
+    <!-- Formulario: Minimalismo Puro -->
+    <div class="bg-background border border-border/40 rounded-sm p-4 space-y-4">
+      <form method="post" class="space-y-4">
+        <div class="space-y-3">
+          <label for="login" class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Identidad
+            Digital</label>
+          <input id="login" name="login" type="text" required
+            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none placeholder:text-muted-foreground/30"
+            placeholder="Usuario o correo">
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <label for="password" class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Clave
+              de Acceso</label>
+          </div>
+          <input id="password" name="password" type="password" required
+            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none placeholder:text-muted-foreground/30"
+            placeholder="••••••••">
+        </div>
+
+        <button type="submit"
+          class="w-full py-3.5 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-[0.2em] rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+          Verificar y Entrar
+        </button>
+      </form>
+
+      <div class="pt-4 border-t border-border/20 text-center">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+          ¿Sin credenciales?
+          <a href="{{ url_for('auth.registro') }}"
+            class="text-foreground/60 hover:text-foreground transition-none">Registrar Perfil &rarr;</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center opacity-40">
+      <a href="#"
+        class="text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-none">¿Problemas
+        de acceso?</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Roles: {{ usuario.username }} - Admin{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-10 max-w-4xl mx-auto">
+    <!-- Header: Estética Atenuada -->
+    <div class="border-b border-border/40 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30 italic">Privilegios de
+                Identidad</span>
+            <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Roles para: {{ usuario.nombres }}</h1>
+            <p class="text-sm text-muted-foreground/60 font-light">Asocie perfiles de autorización a la identidad @{{
+                usuario.username }}.</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{ url_for('usuarios.listar') }}"
+                class="px-4 py-2 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                Descartar
+            </a>
+            <button type="submit" form="roles-form"
+                class="px-8 py-2 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                Sincronizar Roles
+            </button>
+        </div>
+    </div>
+
+    <!-- Selección de Roles: Flexbox Layout -->
+    <form id="roles-form" method="POST" class="flex flex-wrap gap-6">
+        {% for rol in roles %}
+        <label class="cursor-pointer group flex-1 min-w-[340px]">
+            <input type="checkbox" name="roles" value="{{ rol.id }}" class="peer hidden" {% if rol.id in user_role_ids
+                %}checked{% endif %}>
+
+            <div
+                class="h-full border border-border/40 rounded-sm p-8 bg-background hover:bg-secondary/[0.02] peer-checked:bg-secondary/[0.05] peer-checked:border-foreground/20 transition-all">
+                <div class="flex flex-col gap-6">
+                    <div class="flex items-start justify-between">
+                        <div
+                            class="h-10 w-10 rounded bg-secondary/30 flex items-center justify-center border border-border/40 transition-none peer-checked:bg-foreground peer-checked:text-background">
+                            {% if rol.name == 'administrador' %}
+                            <svg class="w-5 h-5 text-muted-foreground/60 group-hover:text-foreground transition-none"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
+                            </svg>
+                            {% else %}
+                            <svg class="w-5 h-5 text-muted-foreground/60 group-hover:text-foreground transition-none"
+                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            {% endif %}
+                        </div>
+
+                        <div
+                            class="h-5 w-5 rounded border border-border/60 flex items-center justify-center transition-all peer-checked:bg-foreground peer-checked:border-foreground">
+                            <!-- Checkmark SVG handled by peer state -->
+                            <div
+                                class="h-2 w-2 bg-foreground rounded-sm opacity-0 group-[.peer-checked]:opacity-100 transition-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/40 italic">Perfil de
+                            Seguridad</p>
+                        <p class="text-xl font-bold text-foreground/80 tracking-tight capitalize">{{ rol.name }}</p>
+                        <p class="text-[11px] text-muted-foreground/60 font-light italic leading-relaxed">{{
+                            rol.description or 'Este rol no posee una definición operativa formal.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </label>
+        {% endfor %}
+    </form>
+</div>
+{% endblock %}

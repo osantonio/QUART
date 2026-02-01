@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo de Rutas - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="h-12 w-12 rounded-sm bg-primary flex items-center justify-center shadow-lg">
+                <svg class="w-6 h-6 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold text-foreground">Catálogo de Rutas</h1>
+                <p class="text-sm text-muted-foreground">Define los slugs de acceso para los diferentes módulos</p>
+            </div>
+        </div>
+        <button onclick="document.getElementById('modal-nuevo-permiso').classList.remove('hidden')"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-sm bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm font-medium shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Nueva Ruta
+        </button>
+    </div>
+
+    <!-- Lista de Rutas Agrupadas -->
+    <div class="bg-card border border-border rounded-sm shadow-sm overflow-hidden">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-secondary/50 border-b border-border">
+                    <th class="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Módulo
+                    </th>
+                    <th class="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Slug</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                        Descripción</th>
+                    <th class="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Roles
+                        Relacionados</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+                {% for permiso in permisos %}
+                <tr class="hover:bg-accent/30 transition-colors">
+                    <td class="px-6 py-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-muted-foreground">{{ permiso.module
+                            }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary">
+                            {{ permiso.slug }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-sm text-foreground">{{ permiso.description or '...' }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs text-muted-foreground">{{ permiso.roles|length }} roles</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Nuevo Permiso -->
+    <div id="modal-nuevo-permiso"
+        class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div
+            class="bg-card w-full max-w-md rounded-sm border border-border shadow-2xl p-6 animate-in zoom-in duration-200">
+            <h2 class="text-xl font-bold text-foreground mb-4">Crear Nueva Ruta</h2>
+            <form action="{{ url_for('admin.crear_permiso') }}" method="POST" class="space-y-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Módulo</label>
+                    <input type="text" name="module" required
+                        class="w-full rounded-sm border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                        placeholder="Ej: usuarios">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Slug de la Ruta</label>
+                    <input type="text" name="slug" required
+                        class="w-full rounded-sm border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                        placeholder="Ej: usuario.crear">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Descripción</label>
+                    <textarea name="description" rows="2"
+                        class="w-full rounded-sm border border-input bg-background px-4 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                        placeholder="¿Qué permite hacer este permiso?"></textarea>
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-4">
+                    <button type="button"
+                        onclick="document.getElementById('modal-nuevo-permiso').classList.add('hidden')"
+                        class="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">Cancelar</button>
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-sm hover:bg-primary/90">Crear
+                        Ruta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

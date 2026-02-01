@@ -1,0 +1,16 @@
+<footer class="bg-background text-muted-foreground border-t border-border/40 py-6">
+    <div
+        class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 opacity-70">
+        <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-foreground/60">
+                &copy; {{ current_year|default(2026) }} Quart Application
+            </p>
+            <span class="hidden sm:block h-3 w-px bg-border/40"></span>
+            <p class="text-[9px] tracking-wider uppercase font-medium">Engineered for clarity</p>
+        </div>
+        <div class="flex items-center gap-3 text-[9px] uppercase tracking-widest font-bold">
+            <span class="px-1.5 py-0.5 border border-border/40 rounded bg-secondary/10 whitespace-nowrap">v1.2.0</span>
+            <span class="text-foreground/20 italic lowercase font-normal">minimalist workflow</span>
+        </div>
+    </div>
+</footer>

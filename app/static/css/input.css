@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --radius: 0.375rem;
+  /* Radio más tipo Bootstrap */
+  color-scheme: light;
+
+  /* Base */
+  --background: #ffffff;
+  --foreground: #212529;
+
+  /* Surface */
+  --card: #ffffff;
+  --card-foreground: #212529;
+
+  --popover: #ffffff;
+  --popover-foreground: #212529;
+
+  /* Brand & Contrast - Pastel Palette */
+  --primary: #cfe2ff;
+  --primary-foreground: #084298;
+
+  --brand: #212529;
+  --brand-foreground: #ffffff;
+
+  --secondary: #e9ecef;
+  --secondary-foreground: #495057;
+
+  --muted: #f8f9fa;
+  --muted-foreground: #6c757d;
+
+  --accent: #f1f3f5;
+  --accent-foreground: #212529;
+
+  /* Status / Buttons - Soft Pastel */
+  --success: #d1e7dd;
+  --success-foreground: #0f5132;
+  --warning: #fff3cd;
+  --warning-foreground: #664d03;
+  --destructive: #f8d7da;
+  --destructive-foreground: #842029;
+
+  /* Navigation / Links */
+  --link: #0d6efd;
+  --link-hover: #0a58ca;
+  --nav-muted: #6c757d;
+  --nav-hover: #212529;
+
+  /* Structure */
+  --border: #dee2e6;
+  --input: #dee2e6;
+  --ring: rgba(13, 110, 253, 0.25);
+
+  /* Visual Details */
+  --glow: rgba(13, 110, 253, 0.1);
+
+  --chart-1: #0d6efd;
+  --chart-2: #198754;
+  --chart-3: #0dcaf0;
+  --chart-4: #ffc107;
+  --chart-5: #dc3545;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #212529;
+  --foreground: #f8f9fa;
+
+  --card: #2c3034;
+  --card-foreground: #f8f9fa;
+
+  --popover: #2c3034;
+  --popover-foreground: #f8f9fa;
+
+  --primary: #032845;
+  --primary-foreground: #6ea8fe;
+
+  --brand: #ffffff;
+  --brand-foreground: #212529;
+
+  --secondary: #343a40;
+  --secondary-foreground: #dee2e6;
+
+  --muted: #2c3034;
+  --muted-foreground: #adb5bd;
+
+  --accent: #2c3034;
+  --accent-foreground: #f8f9fa;
+
+  /* Status / Buttons - Dark Mode Optimization (Vibrant & Premium) */
+  --success: #163b2a;
+  --success-foreground: #4ade80;
+  --warning: #3d2b01;
+  --warning-foreground: #fbbf24;
+  --destructive: #3f1212;
+  --destructive-foreground: #f87171;
+
+  /* Navigation / Links - Dark */
+  --link: #6ea8fe;
+  --link-hover: #9ec5fe;
+  --nav-muted: #adb5bd;
+  --nav-hover: #f8f9fa;
+
+  /* Structure */
+  --border: #495057;
+  --input: #495057;
+  --ring: rgba(13, 110, 253, 0.5);
+
+  --glow: rgba(13, 110, 253, 0.2);
+
+  --chart-1: #3788fd;
+  --chart-2: #1ea869;
+  --chart-3: #6edff6;
+  --chart-4: #ffca2c;
+  --chart-5: #ea868f;
+}
+
+@theme {
+  --radius: var(--radius);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-nav-muted: var(--nav-muted);
+  --color-nav-hover: var(--nav-hover);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Inter", "Geist", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+@layer utilities {
+  .text-mono {
+    font-family: "Geist Mono", monospace;
+  }
+
+  .border-glow {
+    box-shadow: 0 0 20px 5px var(--glow);
+  }
+
+  .glass {
+    @apply bg-background/70 backdrop-blur-xl border border-border/40;
+  }
+
+  .contrast-border {
+    @apply border-foreground/10 dark:border-white/10;
+  }
+}

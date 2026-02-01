@@ -1,0 +1,45 @@
+{% if session.get('token') %}
+<div class="relative flex items-center h-full">
+    <button id="user-menu-button" type="button"
+        class="inline-flex h-8 w-8 items-center justify-center rounded border border-border/40 bg-secondary/30 text-muted-foreground hover:bg-secondary/60 hover:text-foreground transition-none overflow-hidden">
+        {% if session.get('foto_perfil') %}
+        <img src="{{ url_for('static', filename='uploads/profile_pics/' + session.get('foto_perfil')) }}" alt="Avatar"
+            class="h-full w-full object-cover">
+        {% else %}
+        <span class="flex h-full w-full items-center justify-center text-[10px] font-black uppercase tracking-tighter">
+            {{ session.get('username', 'U')[0]|upper }}
+        </span>
+        {% endif %}
+    </button>
+    <div id="user-menu"
+        class="absolute right-0 top-full mt-4 w-52 rounded-sm glass text-card-foreground shadow-sm shadow-black/5 py-1.5 text-xs hidden z-50">
+        <div class="px-4 py-3 border-b border-border/20 mb-1">
+            <p class="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-1">Sesión Activa</p>
+            <p class="font-bold text-foreground/80 truncate">{{ session.get('username', 'Usuario') }}</p>
+        </div>
+
+        <a href="{{ url_for('me.perfil') }}"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-secondary/50 text-nav-muted hover:text-nav-hover transition-none">
+            <span class="text-[10px] uppercase font-bold tracking-wider">Mi Perfil</span>
+        </a>
+        <a href="{{ url_for('main.dashboard') }}"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-secondary/50 text-nav-muted hover:text-nav-hover transition-none">
+            <span class="text-[10px] uppercase font-bold tracking-wider">Dashboard</span>
+        </a>
+
+        <div class="h-px bg-border/20 my-1 mx-2"></div>
+
+        <a href="{{ url_for('auth.logout') }}"
+            class="flex items-center gap-3 px-4 py-2 hover:bg-destructive/10 text-destructive-foreground/70 hover:text-destructive-foreground transition-none">
+            <span class="text-[10px] uppercase font-bold tracking-wider italic">Finalizar Sesión &rarr;</span>
+        </a>
+    </div>
+</div>
+{% else %}
+<div class="flex items-center gap-4">
+    <a href="{{ url_for('auth.login') }}"
+        class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">Login</a>
+    <a href="{{ url_for('auth.registro') }}"
+        class="text-[10px] font-bold uppercase tracking-widest text-foreground transition-none px-3 py-1.5 border border-border/40 rounded bg-secondary/30 hover:bg-secondary/60">Registro</a>
+</div>
+{% endif %}

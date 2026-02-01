@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Permisos: {{ rol.name }} - Admin{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-10">
+    <!-- Header: Estética Atenuada -->
+    <div class="border-b border-border/40 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30 italic">Matriz de
+                Autorización</span>
+            <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Permisos: <span class="capitalize">{{
+                    rol.name }}</span></h1>
+            <p class="text-sm text-muted-foreground/60 font-light">{{ rol.description or 'Configure la granularidad de
+                acceso para esta entidad operativa.' }}</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="{{ url_for('roles.listar') }}"
+                class="px-4 py-2 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                Descartar
+            </a>
+            <button type="submit" form="permissions-form"
+                class="px-8 py-2 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                Sincronizar Permisos
+            </button>
+        </div>
+    </div>
+
+    <!-- Buscador Integrado -->
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <input type="text" id="permSearch" placeholder="Localizar privilegio por módulo o identificador..."
+            class="w-full pl-12 pr-4 py-4 bg-secondary/10 border border-border/40 rounded-sm text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none placeholder:text-muted-foreground/20">
+    </div>
+
+    <!-- Tabla: Lista de Privilegios -->
+    <form id="permissions-form" method="POST" class="border border-border/40 rounded-sm bg-background overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="border-b border-border/40 bg-secondary/[0.03]">
+                    <tr>
+                        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Módulo Operativo</th>
+                        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Identificador (Slug)</th>
+                        <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Alcance del Privilegio</th>
+                        <th
+                            class="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Autorización</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/20" id="permTableBody">
+                    {% for permiso in permisos %}
+                    <tr class="hover:bg-secondary/[0.02] transition-none perm-row"
+                        data-search="{{ (permiso.module + ' ' + permiso.slug)|lower }}">
+                        <td class="px-6 py-5">
+                            <span
+                                class="text-[9px] font-black uppercase tracking-[0.2em] text-foreground/40 italic bg-secondary/30 px-2 py-0.5 rounded border border-border/40">
+                                {{ permiso.module }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <code class="text-[11px] font-mono text-foreground/70">{{ permiso.slug }}</code>
+                        </td>
+                        <td class="px-6 py-5">
+                            <p class="text-[11px] text-muted-foreground/60 font-light italic">{{ permiso.description or
+                                'Criterio no definido' }}</p>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <input type="checkbox" name="permissions" value="{{ permiso.id }}"
+                                class="w-4 h-4 rounded border-border/60 bg-secondary/20 text-foreground focus:ring-0 transition-none cursor-pointer"
+                                {% if permiso.id in mapping %}checked{% endif %} {% if rol.name=='administrador'
+                                %}disabled checked{% endif %}>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('permSearch');
+        const rows = document.querySelectorAll('.perm-row');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase().trim();
+                rows.forEach(row => {
+                    const data = row.getAttribute('data-search');
+                    row.style.display = data.includes(term) ? '' : 'none';
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

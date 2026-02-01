@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Recurso No Encontrado{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 animate-in fade-in duration-500">
+    <div class="mb-10 space-y-3">
+        <span class="text-[10px] font-bold uppercase tracking-[0.5em] text-foreground/20 italic">Error de
+            Protocolo</span>
+        <h1
+            class="text-8xl font-black text-foreground/5 tracking-tighter absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+            404</h1>
+        <h2 class="text-2xl font-bold text-foreground/80 tracking-tight">Recurso No Encontrado</h2>
+    </div>
+
+    <p class="text-sm text-muted-foreground/60 max-w-sm mb-10 font-light leading-relaxed">
+        La ruta especificada no existe en nuestro registro o ha sido discontinuada de la plataforma operativa.
+    </p>
+
+    <div class="flex gap-4">
+        <a href="{{ url_for('main.index') }}"
+            class="px-6 py-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+            Retornar al Inicio &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

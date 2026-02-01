@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Permiso - Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto animate-in fade-in duration-500 space-y-10">
+    <!-- Header: Estética Atenuada -->
+    <div class="border-b border-border pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30 italic">Infraestructura de
+                Accesos</span>
+            <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Editar Permiso</h1>
+            <p class="text-sm text-muted-foreground/60 font-light">Actualice el alcance o la descripción del privilegio
+                seleccionado.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('permisos.listar') }}"
+                class="px-4 py-2 border border-border text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario: Estructura Atenuada -->
+    <div class="border border-border rounded-sm bg-background overflow-hidden">
+        <form method="POST" class="p-10 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-3">
+                    <label class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Módulo
+                        Origen</label>
+                    <input type="text" name="module" value="{{ permiso.module }}" required
+                        class="w-full bg-secondary/10 border border-border rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                </div>
+
+                <div class="space-y-3">
+                    <label
+                        class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Identificador
+                        (Slug)</label>
+                    <input type="text" name="slug" value="{{ permiso.slug }}" required
+                        class="w-full bg-secondary/10 border border-border rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <label class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Descripción
+                    Operativa</label>
+                <textarea name="description" rows="4"
+                    class="w-full bg-secondary/10 border border-border rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none resize-none">{{ permiso.description or '' }}</textarea>
+            </div>
+
+            <!-- Footer: Acciones -->
+            <div class="pt-6 flex items-center justify-end gap-6 border-t border-border/10">
+                <a href="{{ url_for('permisos.listar') }}"
+                    class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                    Descartar
+                </a>
+                <button type="submit"
+                    class="px-8 py-3 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                    Actualizar Registro
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

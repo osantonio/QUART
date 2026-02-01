@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Roles - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-gradient-to-br from-primary/10 to-transparent border border-border rounded-sm p-6">
+        <h1 class="text-2xl font-bold text-foreground">Asignación de Roles</h1>
+        <p class="text-sm text-muted-foreground">Vincula a los usuarios con sus respectivos perfiles de acceso</p>
+    </div>
+
+    <!-- Lista de Usuarios y Roles -->
+    <div class="grid grid-cols-1 gap-4">
+        {% for usuario in usuarios %}
+        <div
+            class="bg-card border border-border rounded-sm p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover:shadow-sm transition-shadow">
+            <div class="flex items-center gap-4 w-full md:w-1/3">
+                <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="text-sm font-bold text-primary">{{ usuario.nombres[0]|upper }}{{
+                        usuario.apellidos[0]|upper }}</span>
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm font-bold text-foreground truncate">{{ usuario.nombres }} {{ usuario.apellidos }}
+                    </p>
+                    <p class="text-xs text-muted-foreground truncate">@{{ usuario.username }}</p>
+                </div>
+            </div>
+
+            <!-- Roles del usuario -->
+            <div class="flex flex-wrap gap-2 flex-1 justify-center md:justify-start">
+                {% for r in roles %}
+                {% set is_assigned = r in usuario.roles %}
+                <button type="button" data-user-id="{{ usuario.id }}" data-role-id="{{ r.id }}"
+                    data-assigned="{{ 'true' if is_assigned else 'false' }}" onclick="handleToggleRole(this)"
+                    class="role-badge inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold transition-all border {{ 'bg-primary text-primary-foreground border-primary' if is_assigned else 'bg-secondary text-secondary-foreground border-border hover:bg-accent' }}">
+                    {{ r.name }}
+                </button>
+                {% endfor %}
+            </div>
+
+            <div class="hidden md:block shrink-0 px-4">
+                <span class="text-[10px] uppercase font-bold text-muted-foreground/40">ID: #{{ usuario.id }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    async function handleToggleRole(btn) {
+        const usuarioId = btn.dataset.userId;
+        const roleId = btn.dataset.roleId;
+        const isCurrentlyAssigned = btn.dataset.assigned === 'true';
+        const action = isCurrentlyAssigned ? 'remove' : 'add';
+
+        // Optimistic UI update
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        try {
+            const response = await fetch('/admin/usuarios/asignar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    usuario_id: parseInt(usuarioId),
+                    role_id: parseInt(roleId),
+                    action: action
+                })
+            });
+
+            if (response.ok) {
+                btn.dataset.assigned = action === 'add' ? 'true' : 'false';
+                if (action === 'add') {
+                    btn.classList.remove('bg-secondary', 'text-secondary-foreground', 'border-border');
+                    btn.classList.add('bg-primary', 'text-primary-foreground', 'border-primary');
+                } else {
+                    btn.classList.remove('bg-primary', 'text-primary-foreground', 'border-primary');
+                    btn.classList.add('bg-secondary', 'text-secondary-foreground', 'border-border');
+                }
+            }
+        } catch (err) {
+            console.error('Error toggling role:', err);
+        } finally {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    }
+</script>
+{% endblock %}

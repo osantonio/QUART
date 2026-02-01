@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Matriz de Rutas (CABR) - Admin{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div
+        class="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-border rounded-sm p-6 shadow-sm">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="h-12 w-12 rounded-sm bg-primary flex items-center justify-center shadow-lg">
+                    <svg class="w-6 h-6 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                        </path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-foreground">Matriz de Rutas</h1>
+                    <p class="text-sm text-muted-foreground">Control de Acceso Basado en Roles (RBAC)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matriz de Rutas -->
+    <div class="bg-card border border-border rounded-sm shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-secondary/50 border-b border-border">
+                        <th
+                            class="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider sticky left-0 bg-card z-10 border-r border-border">
+                            Ruta / Módulo</th>
+                        {% for Rol in roles %}
+                        <th
+                            class="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider min-w-[120px]">
+                            <div class="flex flex-col items-center gap-1">
+                                <span class="text-foreground text-sm">{{ Rol.name }}</span>
+                                <span class="text-[10px] font-normal lowercase opacity-70 italic">{{ Rol.description or
+                                    '' }}</span>
+                            </div>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border">
+                    {% set last_module = "" %}
+                    {% for permiso in permisos %}
+                    {% if permiso.module != last_module %}
+                    <tr class="bg-muted/30">
+                        <td colspan="{{ roles|length + 1 }}"
+                            class="px-6 py-2 text-[10px] font-bold uppercase tracking-widest text-primary/70">
+                            Módulo: {{ permiso.module }}
+                        </td>
+                    </tr>
+                    {% set last_module = permiso.module %}
+                    {% endif %}
+                    <tr class="hover:bg-accent/30 transition-colors">
+                        <td class="px-6 py-4 sticky left-0 bg-card z-10 border-r border-border">
+                            <div class="flex flex-col">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary mb-1 w-fit">
+                                    {{ permiso.slug }}
+                                </span>
+                                <span class="text-xs text-muted-foreground leading-snug">{{ permiso.description or 'Sin
+                                    descripción' }}</span>
+                            </div>
+                        </td>
+                        {% for Rol in roles %}
+                        <td class="px-6 py-4 text-center">
+                            <label class="inline-flex items-center justify-center cursor-pointer group">
+                                <input type="checkbox"
+                                    class="w-5 h-5 rounded border-input bg-background text-primary focus:ring-ring focus:ring-offset-2 transition-all cursor-pointer Permiso-checkbox"
+                                    data-rol-id="{{ Rol.id }}" data-permiso-id="{{ permiso.id }}" {% if permiso.id in
+                                    mapping[Rol.id] %}checked{% endif %}>
+                            </label>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast"
+    class="fixed bottom-6 right-6 px-6 py-3 rounded-sm shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 border">
+    <span id="toast-icon"></span>
+    <span id="toast-message" class="text-sm font-medium"></span>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('.Permiso-checkbox');
+        const toast = document.getElementById('toast');
+        const toastMsg = document.getElementById('toast-message');
+        const toastIcon = document.getElementById('toast-icon');
+
+        function showToast(message, type = 'success') {
+            toastMsg.textContent = message;
+            toast.className = `fixed bottom-6 right-6 px-6 py-3 rounded-sm shadow-2xl transform transition-all duration-300 z-50 flex items-center gap-3 border ${type === 'success'
+                ? 'bg-green-500/10 border-green-500/50 text-green-600 dark:text-green-400'
+                : 'bg-red-500/10 border-red-500/50 text-red-600 dark:text-red-400'
+                }`;
+
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+
+            setTimeout(() => {
+                toast.style.transform = 'translateY(20px)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        checkboxes.forEach(cb => {
+            cb.addEventListener('change', async (e) => {
+                const rolId = e.target.dataset.rolId;
+                const permisoId = e.target.dataset.permisoId;
+                const action = e.target.checked ? 'assign' : 'revoke';
+
+                // Efecto visual de carga
+                e.target.style.opacity = '0.5';
+                e.target.disabled = true;
+
+                try {
+                    const response = await fetch('/admin/permisos/sync', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ role_id: rolId, permission_id: permisoId, action: action })
+                    });
+
+                    const result = await response.json();
+                    if (result.success) {
+                        showToast(`Permiso ${action === 'assign' ? 'asignado' : 'revocado'} correctamente`);
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    e.target.checked = !e.target.checked; // Revertir cambio
+                    showToast('Error al actualizar: ' + error.message, 'error');
+                } finally {
+                    e.target.style.opacity = '1';
+                    e.target.disabled = false;
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

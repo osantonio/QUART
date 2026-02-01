@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-8">
+  <div class="bg-background border border-border/40 rounded-sm p-10 space-y-6">
+    <div class="space-y-2">
+      <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30">Plataforma Operativa</span>
+      <h1 class="text-4xl font-light text-foreground/90 tracking-tighter">Hola, <span class="font-bold">Quart!</span>
+      </h1>
+    </div>
+    <p class="text-sm text-muted-foreground/80 leading-relaxed max-w-2xl font-light">
+      Bienvenido a tu entorno de trabajo profesional. Esta interfaz ha sido optimizada para ofrecer claridad visual y
+      una experiencia de usuario atenuada, utilizando la tipografía <span
+        class="text-foreground/60 font-medium">Geist</span> y un sistema de diseño minimalista.
+    </p>
+
+    <div class="pt-4 flex gap-4">
+      <a href="{{ url_for('main.dashboard') }}"
+        class="px-5 py-2.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+        Ir al Dashboard
+      </a>
+      <a href="#"
+        class="px-5 py-2.5 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+        Documentación
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

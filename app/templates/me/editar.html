@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Perfil - {{ usuario.username }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto animate-in fade-in duration-500 space-y-10">
+    <!-- Header: Estética Atenuada -->
+    <div class="border-b border-border/40 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase tracking-[0.4em] text-foreground/30 italic">Preferencias del
+                Sistema</span>
+            <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Editar Mi Perfil</h1>
+            <p class="text-sm text-muted-foreground/60 font-light">Gestione su identidad digital y parámetros de
+                contacto.</p>
+        </div>
+        <div>
+            <a href="{{ url_for('me.perfil') }}"
+                class="px-4 py-2 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                Cancelar
+            </a>
+        </div>
+    </div>
+
+    <!-- Formulario: Estructura de Configuración -->
+    <div class="border border-border/40 rounded-sm bg-background overflow-hidden">
+        <form method="post" enctype="multipart/form-data" class="divide-y divide-border/20">
+            <!-- Sección: Identidad Visual -->
+            <div class="p-10 space-y-8">
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 italic">Identidad Visual
+                </p>
+
+                <div class="flex items-center gap-8">
+                    <div class="relative">
+                        <div
+                            class="h-24 w-24 rounded bg-secondary/30 flex items-center justify-center border border-border/40 overflow-hidden">
+                            {% if usuario.foto_perfil %}
+                            <img src="{{ url_for('static', filename='uploads/profile_pics/' + usuario.foto_perfil) }}"
+                                alt="Vista previa" class="h-full w-full object-cover">
+                            {% else %}
+                            <span class="text-[12px] font-black uppercase tracking-tighter text-muted-foreground/60">
+                                {{ usuario.username[0]|upper }}
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 flex-1">
+                        <label for="foto_perfil"
+                            class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Cargar
+                            Nueva Imagen</label>
+                        <input id="foto_perfil" name="foto_perfil" type="file" accept="image/*"
+                            class="block w-full text-[11px] text-muted-foreground file:mr-6 file:py-2 file:px-4 file:border file:border-border/60 file:bg-secondary/30 file:text-[10px] file:font-bold file:uppercase file:tracking-widest file:text-foreground/60 hover:file:bg-secondary/60 file:cursor-pointer transition-none">
+                        <p class="text-[9px] text-muted-foreground/40 italic">JPG, PNG o GIF. Recomendado &lt; 2MB.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Datos Personales -->
+            <div class="p-10 space-y-8">
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 italic">Información
+                    Personal</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                        <label for="nombres"
+                            class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Nombres</label>
+                        <input id="nombres" name="nombres" type="text" value="{{ usuario.nombres }}" required
+                            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                    </div>
+                    <div class="space-y-3">
+                        <label for="apellidos"
+                            class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Apellidos</label>
+                        <input id="apellidos" name="apellidos" type="text" value="{{ usuario.apellidos }}" required
+                            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                    </div>
+
+                    <div class="space-y-3">
+                        <label for="telefono"
+                            class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Teléfono</label>
+                        <input id="telefono" name="telefono" type="tel" value="{{ usuario.telefono or '' }}"
+                            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none"
+                            placeholder="+57 300 000 0000">
+                    </div>
+                    <div class="space-y-3">
+                        <label for="fecha_nacimiento"
+                            class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Nacimiento</label>
+                        <input id="fecha_nacimiento" name="fecha_nacimiento" type="date"
+                            value="{{ usuario.fecha_nacimiento or '' }}"
+                            class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Parámetros de Seguridad (Solo Lectura) -->
+            <div class="p-10 bg-secondary/[0.02] space-y-8">
+                <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/30 italic">Datos de Seguridad
+                    (Inmutable)</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">Correo
+                            Electrónico</p>
+                        <p class="text-sm font-medium text-foreground/60">{{ usuario.email }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">
+                            Identificación</p>
+                        <p class="text-sm font-medium text-foreground/60">{{ usuario.identificacion }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer: Acciones Finales -->
+            <div class="p-10 bg-secondary/[0.05] flex items-center justify-between gap-6">
+                <p class="text-[10px] text-muted-foreground/40 italic font-light italic">Al guardar, los cambios se
+                    reflejarán instantáneamente en su perfil público.</p>
+                <div class="flex items-center gap-4">
+                    <a href="{{ url_for('me.perfil') }}"
+                        class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+                        Descartar
+                    </a>
+                    <button type="submit"
+                        class="px-8 py-3 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+                        Guardar Parámetros
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

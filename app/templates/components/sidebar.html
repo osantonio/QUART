@@ -1,0 +1,145 @@
+{% set is_auth = session.get("token") %}
+
+<!-- Sidebar Desktop -->
+<aside class="hidden lg:block lg:w-64 lg:shrink sticky top-20 h-[calc(100vh-12rem)]" data-sidebar-lg>
+  <div class="border border-border/40 bg-background h-full flex flex-col p-6 overflow-y-auto rounded-sm">
+    <div class="flex-1 space-y-8">
+      <div class="space-y-4">
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 px-3">
+          Navegación
+        </p>
+        <nav class="space-y-1 text-nav-muted">
+          {% if is_auth %}
+          <a href="{{ url_for('main.index') }}"
+            class="block px-3 py-2.5 text-xs font-medium hover:text-nav-hover hover:bg-secondary/30 rounded transition-none">
+            Inicio
+          </a>
+          <a href="{{ url_for('main.dashboard') }}"
+            class="block px-3 py-2.5 text-xs font-medium hover:text-nav-hover hover:bg-secondary/30 rounded transition-none">
+            Dashboard
+          </a>
+
+          {% if tiene_acceso('usuarios.listar') %}
+          <div class="pt-2">
+            <a href="{{ url_for('usuarios.listar') }}"
+              class="block px-3 py-2.5 text-xs font-medium hover:text-nav-hover hover:bg-secondary/30 rounded transition-none">
+              Gestión de Usuarios
+            </a>
+          </div>
+          {% endif %}
+
+          {% if tiene_acceso('roles.listar', 'permisos.listar') %}
+          <!-- Seccion Dropdown: Administración -->
+          <div class="pt-4">
+            <button type="button" data-submenu-toggle="admin-menu"
+              class="w-full flex items-center justify-between px-3 py-2.5 text-xs font-medium hover:text-nav-hover hover:bg-secondary/30 rounded transition-none group">
+              <span class="uppercase tracking-widest text-[10px] font-bold opacity-60">Administración</span>
+              <svg data-submenu-chevron class="w-3 h-3 transition-transform duration-200" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <div id="admin-menu" class="hidden pl-4 space-y-1 mt-1 border-l border-border/20">
+              {% if tiene_acceso('roles.listar') %}
+              <a href="{{ url_for('roles.listar') }}"
+                class="block px-3 py-2 text-[11px] font-medium hover:text-nav-hover hover:bg-secondary/20 rounded transition-none">
+                Roles
+              </a>
+              {% endif %}
+              {% if tiene_acceso('permisos.listar') %}
+              <a href="{{ url_for('permisos.listar') }}"
+                class="block px-3 py-2 text-[11px] font-medium hover:text-nav-hover hover:bg-secondary/20 rounded transition-none">
+                Permisos
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+
+    <!-- Bottom Section Actions -->
+    {% if is_auth %}
+    <div class="mt-auto pt-6 border-t border-border/10 flex items-center justify-between gap-4">
+      <a href="{{ url_for('auth.logout') }}"
+        class="text-[10px] font-bold uppercase tracking-widest text-destructive-foreground/50 hover:text-destructive-foreground transition-all hover:translate-x-1">
+        Finalizar Sesión &rarr;
+      </a>
+      <div class="shrink-0">
+        {% include "components/theme_toggle.html" %}
+      </div>
+    </div>
+    {% else %}
+    <div class="mt-auto pt-6 border-t border-border/10 space-y-3">
+      <a href="{{ url_for('auth.login') }}"
+        class="block py-2 text-xs font-bold uppercase tracking-widest text-foreground/80 hover:text-primary transition-none">
+        Ingresar
+      </a>
+      <a href="{{ url_for('auth.registro') }}"
+        class="block py-2 text-xs font-bold uppercase tracking-widest text-foreground/80 hover:text-primary transition-none">
+        Crear Cuenta
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</aside>
+
+<!-- Sidebar Mobile -->
+<div class="lg:hidden pointer-events-none" data-sidebar-overlay>
+  <div class="fixed inset-x-0 top-[49px] bottom-0 z-40 flex">
+    <div type="button" data-sidebar-backdrop
+      class="fixed inset-0 bg-black/50 opacity-0 transition-opacity duration-300 pointer-events-none"></div>
+    <div
+      class="relative flex w-72 max-w-xs flex-col border-r border-border/40 bg-background p-8 shadow-2xl shadow-black/20 transition-transform duration-300 -translate-x-full pointer-events-auto"
+      data-sidebar-panel>
+      <div class="mb-12 flex items-center justify-between">
+        <p class="text-[11px] font-bold uppercase tracking-[0.3em] text-foreground/40">
+          Menú Principal
+        </p>
+        <button type="button" data-sidebar-close
+          class="h-8 w-8 flex items-center justify-center rounded border border-border/40 text-muted-foreground hover:text-foreground transition-none">
+          <span class="text-lg">&times;</span>
+        </button>
+      </div>
+      <nav class="flex-1 space-y-4">
+        {% if is_auth %}
+        <a href="{{ url_for('main.index') }}" class="block text-lg font-light text-foreground/80">Inicio</a>
+        <a href="{{ url_for('main.dashboard') }}" class="block text-lg font-light text-foreground/80">Dashboard</a>
+        {% if tiene_acceso('usuarios.listar') %}
+        <a href="{{ url_for('usuarios.listar') }}" class="block text-lg font-light text-foreground/80">Gestión de
+          Usuarios</a>
+        {% endif %}
+
+        <div class="h-px bg-border/20 my-6 mr-10"></div>
+
+        {% if tiene_acceso('roles.listar', 'permisos.listar') %}
+        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 mb-4">Administración</p>
+        <div class="space-y-4 pl-4">
+          {% if tiene_acceso('roles.listar') %}
+          <a href="{{ url_for('roles.listar') }}" class="block text-sm font-medium text-foreground/70">Roles</a>
+          {% endif %}
+          {% if tiene_acceso('permisos.listar') %}
+          <a href="{{ url_for('permisos.listar') }}" class="block text-sm font-medium text-foreground/70">Permisos</a>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% else %}
+        <a href="{{ url_for('auth.login') }}" class="block text-xl font-light text-foreground">Iniciar sesión</a>
+        <a href="{{ url_for('auth.registro') }}" class="block text-xl font-light text-foreground mt-4">Registrarse</a>
+        {% endif %}
+      </nav>
+
+      {% if is_auth %}
+      <div class="mt-auto pt-8 flex items-center justify-between border-t border-border/10">
+        <a href="{{ url_for('auth.logout') }}"
+          class="text-xs font-bold uppercase tracking-[0.2em] text-destructive-foreground/70">Finalizar Sesión
+          &rarr;</a>
+        {% include "components/theme_toggle.html" %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

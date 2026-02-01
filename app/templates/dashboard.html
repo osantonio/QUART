@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-10">
+  <div class="space-y-1">
+    <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 italic">Overview Global</span>
+    <h1 class="text-3xl font-bold text-foreground/90 tracking-tight">Dashboard de Gestión</h1>
+  </div>
+
+  <div class="flex flex-wrap gap-6">
+    <!-- Tarjeta: Estado del Sistema -->
+    <div class="flex-1 min-w-[300px] border border-border/40 bg-background rounded-sm p-8 space-y-4">
+      <p class="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Sincronización</p>
+      <div class="flex items-end gap-2">
+        <span class="text-3xl font-light text-foreground/80">Operativo</span>
+        <div class="mb-2 w-2 h-2 rounded-full bg-green-500/60"></div>
+      </div>
+      <p class="text-xs text-muted-foreground/50">Todos los servicios se encuentran activos y bajo parámetros normales
+        de respuesta.</p>
+    </div>
+
+    <!-- Tarjeta: Métricas -->
+    <div class="flex-1 min-w-[300px] border border-border/40 bg-background rounded-sm p-8 space-y-4">
+      <p class="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Tráfico de Red</p>
+      <p class="text-3xl font-light text-foreground/80">14.2 <span class="text-base text-muted-foreground/40">ms</span>
+      </p>
+      <div class="h-1.5 w-full bg-secondary/20 rounded-full overflow-hidden">
+        <div class="h-full w-2/3 bg-foreground/10 rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- Tarjeta: Usuarios -->
+    <div class="flex-1 min-w-[300px] border border-border/40 bg-background rounded-sm p-8 space-y-4">
+      <p class="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">Sesiones Únicas</p>
+      <p class="text-3xl font-light text-foreground/80">384</p>
+      <p class="text-xs text-muted-foreground/50 italic">+12% respecto a la jornada anterior</p>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal Dashboard -->
+  <div
+    class="border border-border/40 bg-background rounded-sm p-10 min-h-[300px] flex flex-col items-center justify-center text-center space-y-4">
+    <div class="p-4 bg-secondary/10 rounded-full text-muted-foreground/30">
+      <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+        </path>
+      </svg>
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-lg font-medium text-foreground/60">Preparando analíticas detalladas</h3>
+      <p class="text-sm text-muted-foreground/40 font-light max-w-sm">Los datos extendidos de su actividad se están
+        procesando para ofrecer una visualización precisa.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

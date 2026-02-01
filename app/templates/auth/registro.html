@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Registrarse - Quart App{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center px-4 py-16 animate-in fade-in duration-500">
+  <div class="w-full max-w-xl">
+    <!-- Header: Atenuado -->
+    <div class="text-center mb-10 space-y-3">
+      <div
+        class="mx-auto w-12 h-12 rounded bg-foreground text-background flex items-center justify-center text-xl font-black tracking-tighter">
+        Q</div>
+      <div class="space-y-1">
+        <h1 class="text-2xl font-bold text-foreground/90 tracking-tight">Registro de Identidad</h1>
+        <p class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/30 italic">Nueva Cuenta de Usuario
+        </p>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="bg-background border border-border/40 rounded-sm p-10 space-y-10">
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      <div class="mb-6 space-y-2">
+        {% for message in messages %}
+        <div
+          class="rounded border border-destructive/20 bg-destructive/5 px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-destructive/70">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <form method="post" class="space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Datos Personales -->
+          <div class="space-y-6">
+            <p
+              class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 border-b border-border/10 pb-2">
+              Información Base</p>
+
+            <div class="space-y-2">
+              <label for="identificacion"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Cédula / ID</label>
+              <input id="identificacion" name="identificacion" type="number" required placeholder="0000000000"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+
+            <div class="space-y-2">
+              <label for="nombres"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Nombres</label>
+              <input id="nombres" name="nombres" type="text" required placeholder="Ej. Juan"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+
+            <div class="space-y-2">
+              <label for="apellidos"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Apellidos</label>
+              <input id="apellidos" name="apellidos" type="text" required placeholder="Ej. Pérez"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+          </div>
+
+          <!-- Datos de Acceso -->
+          <div class="space-y-6">
+            <p
+              class="text-[10px] font-bold uppercase tracking-[0.3em] text-foreground/40 border-b border-border/10 pb-2">
+              Credenciales</p>
+
+            <div class="space-y-2">
+              <label for="username"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Alias de
+                Usuario</label>
+              <input id="username" name="username" type="text" required placeholder="usuario_99"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+
+            <div class="space-y-2">
+              <label for="email"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Dirección Email</label>
+              <input id="email" name="email" type="email" required placeholder="ejemplo@mail.com"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+
+            <div class="space-y-2">
+              <label for="password"
+                class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Contraseña
+                Segura</label>
+              <input id="password" name="password" type="password" required placeholder="••••••••"
+                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-2.5 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 border-t border-border/20">
+          <button type="submit"
+            class="w-full py-4 bg-primary text-primary-foreground text-[11px] font-bold uppercase tracking-[0.2em] rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+            Consolidar Registro y Crear Perfil
+          </button>
+        </div>
+      </form>
+
+      <div class="text-center">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40">
+          ¿Cuenta existente?
+          <a href="{{ url_for('auth.login') }}"
+            class="text-foreground/60 hover:text-foreground transition-none">Ingresar con mis datos &rarr;</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

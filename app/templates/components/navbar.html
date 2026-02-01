@@ -1,0 +1,37 @@
+<nav class="glass text-foreground sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex h-[49px] items-center justify-between">
+      <div class="flex items-center gap-4">
+        <!-- Sidebar Toggle: Discreto -->
+        <button type="button" data-sidebar-toggle
+          class="inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-secondary/30 text-muted-foreground hover:bg-secondary/80 hover:text-foreground transition-none lg:mr-2"
+          aria-label="Menú">
+          <span class="flex flex-col gap-0.5">
+            <span class="block w-3.5 h-[1.5px] bg-current"></span>
+            <span class="block w-3.5 h-[1.5px] bg-current"></span>
+            <span class="block w-3.5 h-[1.5px] bg-current"></span>
+          </span>
+        </button>
+        <div class="flex items-center gap-2.5">
+          <a href="{{ url_for('main.index') }}">
+            <span
+              class="h-8 w-8 rounded bg-foreground text-background flex items-center justify-center text-[14px] font-black tracking-tighter">APS</span>
+          </a>
+          <span class="text-md font-bold uppercase tracking-[0.2em] text-foreground/80">ASILO <span
+              class="text-foreground/40 font-light">PERPETUO SOCORRO</span></span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 h-full">
+        <a href="{{ url_for('main.index') }}"
+          class="text-[10px] font-bold uppercase tracking-widest text-nav-muted hover:text-nav-hover transition-none">Inicio</a>
+
+        <div class="h-4 w-px bg-border/40 hidden sm:block"></div>
+
+        <div class="flex items-center gap-2">
+          {% include 'components/user_dropdown.html' %}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

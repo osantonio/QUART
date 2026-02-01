@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Roles - Admin{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+    <!-- Header -->
+    <div class="space-y-2">
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-nav-muted">
+            <a href="{{ url_for('main.index') }}" class="hover:text-nav-hover transition-colors">Sistema</a>
+            <span class="text-border/40">/</span>
+            <span class="text-nav-hover/60">Gestión de Roles</span>
+        </nav>
+
+        <div class="flex flex-row items-stretch justify-between">
+            <div>
+                <h1 class="text-6xl font-black text-foreground/90 tracking-tighter leading-none">Roles</h1>
+                <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+                    Estructura jerárquica para el control de acceso y privilegios operativos del sistema.
+                </p>
+            </div>
+
+            <div class="flex items-start justify-end gap-4">
+                <a href="{{ url_for('usuarios.listar') }}"
+                    class="px-6 py-2.5 bg-secondary text-secondary-foreground text-[10px] font-bold uppercase tracking-widest rounded-sm hover:opacity-90 transition-all duration-300 inline-flex items-center gap-2 border border-border/40">
+                    Asignar Rol
+                </a>
+                <a href="{{ url_for('roles.crear') }}"
+                    class="px-6 py-2.5 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded-sm hover:opacity-90 transition-all duration-300 inline-flex items-center gap-2 shadow-sm shadow-primary/20">
+                    Crear Nuevo
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de búsqueda: Integrada -->
+    <div class="relative group">
+        <div
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-primary/40 transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Filtrar por nombre o descripción..."
+            class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-muted-foreground/20">
+    </div>
+
+    <!-- Tabla: Estética de Lista Minimalista -->
+    <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="border-b border-border bg-secondary/[0.03]">
+                    <tr>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Etiqueta de Rol</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Descripción Operativa</th>
+                        <th
+                            class="px-6 py-4 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Carga Administrativa</th>
+                        <th
+                            class="px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Operaciones</th>
+                    </tr>
+                </thead>
+                {% if roles %}
+                <tbody class="divide-y divide-border/40" id="userTableBody">
+                    {% for rol in roles %}
+                    <tr class="hover:bg-secondary/[0.02] transition-none user-row"
+                        data-search="{{ rol.name }} {{ rol.description or '' }}">
+                        <td class="px-6 py-3">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="h-8 w-8 rounded bg-secondary/30 flex items-center justify-center border border-border shrink-0">
+                                    <span class="text-[10px] font-black uppercase text-muted-foreground/60">{{
+                                        rol.name[0] }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-semibold text-foreground/80 tracking-tight capitalize">{{
+                                        rol.name }}</span>
+                                    {% if rol.name in ['administrador', 'general'] %}
+                                    <span
+                                        class="px-1.5 py-0.5 text-[8px] font-black uppercase tracking-widest bg-orange-500/5 text-orange-600/60 border border-orange-500/10 rounded-sm">Sistémica</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3">
+                            <p class="text-[11px] text-muted-foreground/60 font-light max-w-sm truncate italic">{{
+                                rol.description or 'Definición no especificada' }}</p>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <span class="text-[11px] font-bold text-foreground/50 bg-secondary/20 px-2 py-0.5 rounded">
+                                {{ rol.usuarios|length }} usuarios
+                            </span>
+                        </td>
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-end gap-3">
+                                <a href="{{ url_for('roles.editar', id=rol.id) }}"
+                                    class="p-2.5 bg-warning text-warning-foreground border border-warning/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-warning/10"
+                                    title="Modificar estructura">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                {% if rol.name not in ['administrador', 'general'] %}
+                                <form action="{{ url_for('roles.eliminar', id=rol.id) }}" method="POST" class="inline">
+                                    <button type="submit"
+                                        class="p-2.5 bg-destructive text-destructive-foreground border border-destructive/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-destructive/10"
+                                        onclick="return confirm('¿Confirmar de-registro del rol? Esta acción es irreversible.')"
+                                        title="Eliminar registro">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                                d="M19 7l-.867 12.142A2 2 0 0016.138 21H7.862a2 2 0 00-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <div class="p-2.5 border border-border/20 rounded-sm text-muted-foreground/20 cursor-not-allowed"
+                                    title="Entidad Protegida">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden py-20 text-center animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div
+            class="mx-auto w-16 h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-4 border border-border/40">
+            <svg class="w-8 h-8 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0l-8 8-8-8"></path>
+            </svg>
+        </div>
+        <h3 class="text-sm font-bold text-foreground/60 uppercase tracking-widest">Sin resultados</h3>
+        <p class="text-xs text-muted-foreground/40 mt-1">No se encontraron roles que coincidan con su búsqueda.</p>
+    </div>
+
+    <!-- Resultados -->
+    <div class="flex items-center justify-end">
+        <p id="resultsCount" data-entity="roles" class="text-[10px] text-muted-foreground/60 font-light">
+            Mostrando {{ roles|length }} de {{ roles|length }} roles
+        </p>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/usuarios_listar_search.js') }}" defer></script>
+{% endblock %}

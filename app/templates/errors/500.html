@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Error de Servidor{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4 animate-in fade-in duration-500">
+    <div class="mb-10 space-y-3">
+        <span class="text-[10px] font-bold uppercase tracking-[0.5em] text-destructive/30 italic">Error de
+            Ejecución</span>
+        <h1
+            class="text-8xl font-black text-destructive/5 tracking-tighter absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+            500</h1>
+        <h2 class="text-2xl font-bold text-foreground/80 tracking-tight">Fallo Crítico del Sistema</h2>
+    </div>
+
+    <p class="text-sm text-muted-foreground/60 max-w-sm mb-10 font-light leading-relaxed">
+        Se ha detectado una anomalía interna en el procesamiento de su solicitud. Nuestros ingenieros han sido
+        notificados para la rectificación técnica.
+    </p>
+
+    <div class="flex gap-4">
+        <a href="{{ url_for('main.index') }}"
+            class="px-6 py-3 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+            Retornar al Inicio
+        </a>
+        <button onclick="window.location.reload()"
+            class="px-6 py-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+            Reintentar Operación
+        </button>
+    </div>
+</div>
+{% endblock %}
