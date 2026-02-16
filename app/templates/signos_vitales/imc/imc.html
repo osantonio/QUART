@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}IMC{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div class="space-y-2">
+      <a href="{{ url_for('signos_vitales.listar') }}"
+         class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        Volver a signos vitales
+      </a>
+      <h1 class="text-4xl font-bold text-foreground">Índice de Masa Corporal</h1>
+      <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+        Resumen de IMC con clasificación estándar y distribución por categorías.
+      </p>
+    </div>
+    <div class="flex items-center justify-end">
+      <a href="{{ url_for('beneficiarios.listar') }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-2 shadow-sm shadow-primary/20">
+        <img src="{{ url_for('static', filename='svg/add button.svg') }}"
+             alt="Registrar signos"
+             class="w-4 h-4">
+        Registrar signos
+      </a>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-3">
+    {% for item in distribucion %}
+    <button type="button"
+            data-imc-card="{{ item.categoria }}"
+            class="flex-1 min-w-[180px] border border-border/40 bg-background rounded-sm p-4 space-y-2 text-left hover:border-primary/60 hover:bg-secondary/10 transition-none">
+      <div class="flex items-center justify-between">
+        <p class="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">{{ item.categoria }}</p>
+        <span class="h-2 w-2 rounded-full
+          {% if item.categoria == 'Bajo peso' %}bg-[#0d6efd]
+          {% elif item.categoria == 'Normal' %}bg-[#28a745]
+          {% elif item.categoria == 'Sobrepeso' %}bg-[#ffc107]
+          {% elif item.categoria == 'Obesidad' %}bg-[#dc3545]
+          {% else %}bg-muted-foreground/40{% endif %}">
+        </span>
+      </div>
+      <p class="text-2xl font-light text-foreground/80">{{ item.cantidad }}</p>
+      <p class="text-xs text-muted-foreground/50">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full border text-[10px] font-semibold tracking-widest
+          {% if item.categoria == 'Bajo peso' %}border-[#0d6efd]/60 text-[#0d6efd]
+          {% elif item.categoria == 'Normal' %}border-[#28a745]/60 text-[#28a745]
+          {% elif item.categoria == 'Sobrepeso' %}border-[#ffc107]/80 text-[#ffc107]
+          {% elif item.categoria == 'Obesidad' %}border-[#dc3545]/60 text-[#dc3545]
+          {% else %}border-border/60 text-muted-foreground{% endif %}">
+          {{ item.porcentaje }}%
+        </span>
+      </p>
+    </button>
+    {% endfor %}
+  </div>
+
+  <div class="mt-6 relative group w-full">
+    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-link">
+      <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <input type="text" id="imcSearchInput" placeholder="Filtrar por nombre o categoría..."
+           class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-link focus:ring-4 focus:ring-link/10 transition-all outline-none placeholder:text-muted-foreground/20">
+  </div>
+
+  <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="border-b border-border bg-muted/50">
+          <tr>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Beneficiario</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Edad</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">IMC</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Categoría</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 text-center">Acción</th>
+          </tr>
+        </thead>
+        {% if items %}
+        <tbody class="divide-y divide-border/40">
+          {% for item in items %}
+          <tr class="hover:bg-secondary/5 transition-none imc-row"
+              data-categoria="{{ item.categoria }}"
+              data-search="{{ (item.nombre ~ ' ' ~ (item.categoria or ''))|lower }}">
+            <td class="px-6 py-3 text-sm">{{ item.nombre }}</td>
+            <td class="px-6 py-3 text-sm">{{ item.edad }}</td>
+            <td class="px-6 py-3 text-sm">
+              {{ "%.2f"|format(item.imc) if item.imc is not none else "—" }}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest
+                {% if item.categoria == 'Bajo peso' %}bg-[#0d6efd]/10 text-[#0d6efd] border border-[#0d6efd]/40
+                {% elif item.categoria == 'Normal' %}bg-[#28a745]/10 text-[#28a745] border border-[#28a745]/40
+                {% elif item.categoria == 'Sobrepeso' %}bg-[#ffc107]/10 text-[#856404] border border-[#ffc107]/60
+                {% elif item.categoria == 'Obesidad' %}bg-[#dc3545]/10 text-[#dc3545] border border-[#dc3545]/60
+                {% else %}bg-muted text-muted-foreground border border-border/60{% endif %}">
+                {{ item.categoria }}
+              </span>
+            </td>
+            <td class="px-6 py-3 text-sm">
+              <div class="flex items-center justify-center gap-2">
+                <a href="{{ url_for('signos_vitales.asignar', beneficiario_id=item.id) }}"
+                   aria-label="Registrar signos vitales"
+                   title="Registrar signos vitales"
+                   class="h-8 w-8 flex items-center justify-center rounded hover:bg-secondary/20">
+                  <img src="{{ url_for('static', filename='svg/add.svg') }}"
+                       alt="Registrar signos vitales"
+                       class="w-4 h-4">
+                </a>
+                <a href="{{ url_for('imc.imc_historial', id=item.id) }}"
+                   aria-label="Ver historial de peso"
+                   title="Ver historial de peso"
+                   class="h-8 w-8 flex items-center justify-center rounded hover:bg-secondary/20">
+                  <img src="{{ url_for('static', filename='svg/view.svg') }}"
+                       alt="Ver historial de peso"
+                       class="w-4 h-4">
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody>
+          <tr>
+            <td colspan="5" class="px-6 py-12 text-center text-sm text-muted-foreground/60">
+              No hay datos de IMC disponibles
+            </td>
+          </tr>
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-2 text-[10px] text-muted-foreground/60 max-w-xl">
+    <p>
+      Clasificación IMC (OMS): Bajo peso &lt; 18.5 · Normal 18.5–24.9 · Sobrepeso 25.0–29.9 · Obesidad ≥ 30.0 kg/m². Fuente: Organización Mundial de la Salud.
+    </p>
+  </div>
+
+  <div class="flex items-center justify-end">
+    <p id="imcResultsCount" class="text-[10px] text-muted-foreground/60 font-light">
+      Mostrando {{ items|length if items else 0 }} beneficiarios
+    </p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/signos_vitales_imc_listado.js') }}"></script>
+{% endblock %}

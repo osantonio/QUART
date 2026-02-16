@@ -1,11 +1,17 @@
 
-from datetime import datetime
+from datetime import datetime, time as dtime
 from quart import Quart
 from app.config.database import init_db, engine
 from app.utils.auth import has_permission, es_admin, tiene_rol, tiene_acceso
 from quart import render_template
+from app.config.formato_fecha import formato_fecha, formato_fecha_hora, formato_hora
 
 def setup_app(app: Quart) -> None:
+
+    app.jinja_env.filters["formato_fecha"] = formato_fecha
+    app.jinja_env.filters["formato_fecha_hora"] = formato_fecha_hora
+    app.jinja_env.filters["formato_hora"] = formato_hora
+
     @app.context_processor
     def inject_template_globals():
         return {

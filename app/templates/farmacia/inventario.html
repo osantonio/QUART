@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Inventario de Farmacia{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-foreground">Inventario General</h1>
+            <p class="text-sm text-muted-foreground">Consolidado de stock por medicamento</p>
+        </div>
+        <div class="flex gap-2">
+            {% if tiene_acceso('medicamentos.gestionar') %}
+            <a href="{{ url_for('farmacia.nuevo_lote') }}"
+                class="px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90 rounded text-sm font-medium transition-colors">
+                + Registrar Lote
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Stats Cards Rápidas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-card border border-border/40 p-6 rounded-sm space-y-2">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">Total SKU</p>
+            <p class="text-3xl font-bold text-foreground">{{ inventario|length }}</p>
+        </div>
+        <div class="bg-card border border-border/40 p-6 rounded-sm space-y-2 border-l-4 border-l-amber-500">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-amber-500/80">Stock Bajo (< 50 unid)</p>
+                    {% set stock_bajo = inventario | selectattr("total_disponible", "lt", 50) | list %}
+                    <p class="text-3xl font-bold text-foreground">{{ stock_bajo|length }}</p>
+        </div>
+        <div class="bg-card border border-border/40 p-6 rounded-sm space-y-2 border-l-4 border-l-emerald-500">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-500/80">Disponibilidad</p>
+            <p class="text-3xl font-bold text-foreground">{{ (inventario|sum(attribute='total_disponible') /
+                1000)|round(1) }}k <span class="text-xs font-normal text-muted-foreground">unid.</span></p>
+        </div>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm overflow-hidden mt-8">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-secondary/30 text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+                <tr>
+                    <th class="px-6 py-4">Medicamento</th>
+                    <th class="px-6 py-4 text-center">Lotes Activos</th>
+                    <th class="px-6 py-4 text-center">Stock Total</th>
+                    <th class="px-6 py-4">Estado</th>
+                    <th class="px-6 py-4 text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border/20">
+                {% for item in inventario %}
+                <tr class="hover:bg-secondary/10 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-foreground">{{ item.nombre }}</div>
+                        <div class="text-[10px] text-muted-foreground">{{ item.presentacion }} - {{ item.concentracion
+                            }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-center text-muted-foreground font-medium">
+                        {{ item.num_lotes }}
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span
+                            class="text-lg font-bold {{ 'text-amber-500' if item.total_disponible < 50 else 'text-foreground' }}">
+                            {{ item.total_disponible }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        {% if item.total_disponible == 0 %}
+                        <span
+                            class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-destructive/10 text-destructive border border-destructive/20">Agotado</span>
+                        {% elif item.total_disponible < 50 %} <span
+                            class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                            Reorden</span>
+                            {% else %}
+                            <span
+                                class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Ok</span>
+                            {% endif %}
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="{{ url_for('farmacia.detalle_medicamento', id=item.id) }}"
+                            class="text-primary hover:underline font-medium text-xs">Gestionar Lotes</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-muted-foreground">
+                        No hay medicamentos con stock registrado.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

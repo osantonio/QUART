@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Signos Vitales{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-300 space-y-6">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div class="space-y-2">
+      <a href="{{ url_for('signos_vitales.listar') }}"
+         class="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        Volver a signos vitales
+      </a>
+      <h1 class="text-2xl font-bold text-foreground">Historial de Signos Vitales</h1>
+      <p class="text-sm text-muted-foreground/60">Eventos clínicos registrados recientes</p>
+    </div>
+    <div class="flex items-center justify-end">
+      <a href="{{ url_for('beneficiarios.listar') }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-2 shadow-sm shadow-primary/20">
+        <img src="{{ url_for('static', filename='svg/add button.svg') }}"
+             alt="Registrar signos"
+             class="w-4 h-4">
+        Registrar signos
+      </a>
+    </div>
+  </div>
+
+  <div class="space-y-3">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 w-full">
+      <button type="button" data-filter-tipo="tension"
+              class="w-full text-center px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-signos-tension/60 bg-signos-tension/5 text-signos-tension">
+        <span class="inline-flex items-center justify-center gap-2">
+          <img src="{{ url_for('static', filename='svg/blood pressure.svg') }}"
+               alt="Tensión arterial"
+               class="w-3.5 h-3.5">
+          <span>Tensión arterial</span>
+        </span>
+      </button>
+      <button type="button" data-filter-tipo="peso"
+              class="w-full text-center px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-signos-peso/60 bg-signos-peso/5 text-signos-peso">
+        <span class="inline-flex items-center justify-center gap-2">
+          <img src="{{ url_for('static', filename='svg/weight.svg') }}"
+               alt="Peso"
+               class="w-3.5 h-3.5">
+          <span>Peso</span>
+        </span>
+      </button>
+      <button type="button" data-filter-tipo="oximetria"
+              class="w-full text-center px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-signos-oximetria/60 bg-signos-oximetria/5 text-signos-oximetria">
+        <span class="inline-flex items-center justify-center gap-2">
+          <img src="{{ url_for('static', filename='svg/oximetry.svg') }}"
+               alt="Oximetría"
+               class="w-3.5 h-3.5">
+          <span>Oximetría</span>
+        </span>
+      </button>
+      <button type="button" data-filter-tipo="glucometria"
+              class="w-full text-center px-3 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-signos-glucometria/60 bg-signos-glucometria/5 text-signos-glucometria">
+        <span class="inline-flex items-center justify-center gap-2">
+          <img src="{{ url_for('static', filename='svg/glucose.svg') }}"
+               alt="Glucometría"
+               class="w-3.5 h-3.5">
+          <span>Glucometría</span>
+        </span>
+      </button>
+    </div>
+    <div class="relative w-full">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <input id="searchHistorialInput"
+             type="text"
+             placeholder="Filtrar por usuario, observación o ID..."
+             class="w-full pl-10 pr-4 py-2.5 bg-background border border-border rounded-sm text-sm focus:border-link focus:ring-4 focus:ring-link/10 outline-none placeholder:text-muted-foreground/30">
+    </div>
+  </div>
+
+  <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="border-b border-border bg-muted/50">
+          <tr>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">ID</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Beneficiario</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Valor a medir</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Valor medido</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Fecha registro</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">regitra</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Observación</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border/40">
+          {% for r in registros %}
+          {% set tipo = 'tension' if r.tension_arterial
+                      else ('peso' if r.peso_medicion and r.peso_medicion.valor is not none
+                      else ('oximetria' if r.saturacion and r.saturacion.porcentaje is not none
+                      else ('glucometria' if r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none
+                      else 'otro'))) %}
+          {% set usuario = r.usuario.username if r.usuario and r.usuario.username
+                           else ((r.usuario.nombres.split(' ')[0] ~ ' ' ~ r.usuario.apellidos.split(' ')[0]) if r.usuario else 'Sistema') %}
+          {% set observacion = r.tension_arterial.observaciones if r.tension_arterial
+                            else (r.peso_medicion.observaciones if r.peso_medicion and r.peso_medicion.valor is not none
+                            else (r.saturacion.observaciones if r.saturacion and r.saturacion.porcentaje is not none
+                            else (r.glucosa_medicion.observaciones if r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none
+                            else ''))) %}
+          <tr class="hover:bg-secondary/5 transition-none"
+              data-tipo="{{ tipo }}"
+              data-search="{{ (usuario ~ ' ' ~ (observacion or '') ~ ' ' ~ (r.id|string))|lower }}">
+            <td class="px-6 py-3">
+              <span class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                {{ r.id }}
+              </span>
+            </td>
+            <td class="px-6 py-3 text-sm text-center">
+              {% if r.beneficiario %}
+                {% set beneficiario_nombre = r.beneficiario.nombres.split(' ')[0] ~ ' ' ~ r.beneficiario.apellidos.split(' ')[0] %}
+                {% set beneficiario_iniciales = r.beneficiario.nombres[0]|upper ~ r.beneficiario.apellidos[0]|upper %}
+                <div class="flex items-center justify-center">
+                  <div
+                    class="h-7 w-7 rounded-full bg-secondary/30 flex items-center justify-center overflow-hidden border border-border/60"
+                    title="{{ beneficiario_nombre }}">
+                    {% if r.beneficiario.foto_perfil %}
+                      <img src="{{ url_for('static', filename='uploads/profile_pics/' + r.beneficiario.foto_perfil) }}"
+                           alt="{{ beneficiario_nombre }}" class="h-full w-full object-cover">
+                    {% else %}
+                      <span class="text-[10px] font-semibold text-muted-foreground/80">
+                        {{ beneficiario_iniciales }}
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+              {% else %}
+                <span class="text-[11px] text-muted-foreground/60 italic">Sin beneficiario</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm text-center">
+              {% if tipo == 'tension' %}
+                {% set badge_classes = 'bg-signos-tension/10 text-signos-tension border border-signos-tension/30' %}
+                <div class="inline-flex items-center justify-center h-7 w-7 rounded-md {{ badge_classes }}" title="Tensión arterial">
+                  <img src="{{ url_for('static', filename='svg/blood pressure.svg') }}"
+                       alt="Tensión arterial"
+                       class="w-3.5 h-3.5">
+                </div>
+              {% elif tipo == 'peso' %}
+                {% set badge_classes = 'bg-signos-peso/10 text-signos-peso border border-signos-peso/30' %}
+                <div class="inline-flex items-center justify-center h-7 w-7 rounded-md {{ badge_classes }}" title="Peso">
+                  <img src="{{ url_for('static', filename='svg/weight.svg') }}"
+                       alt="Peso"
+                       class="w-3.5 h-3.5">
+                </div>
+              {% elif tipo == 'oximetria' %}
+                {% set badge_classes = 'bg-signos-oximetria/10 text-signos-oximetria border border-signos-oximetria/30' %}
+                <div class="inline-flex items-center justify-center h-7 w-7 rounded-md {{ badge_classes }}" title="Oximetría">
+                  <img src="{{ url_for('static', filename='svg/oximetry.svg') }}"
+                       alt="Oximetría"
+                       class="w-3.5 h-3.5">
+                </div>
+              {% elif tipo == 'glucometria' %}
+                {% set badge_classes = 'bg-signos-glucometria/10 text-signos-glucometria border border-signos-glucometria/30' %}
+                <div class="inline-flex items-center justify-center h-7 w-7 rounded-md {{ badge_classes }}" title="Glucometría">
+                  <img src="{{ url_for('static', filename='svg/glucose.svg') }}"
+                       alt="Glucometría"
+                       class="w-3.5 h-3.5">
+                </div>
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.tension_arterial %}
+                {{ r.tension_arterial.sistolica or '—' }}/{{ r.tension_arterial.diastolica or '—' }} mmHg
+              {% elif r.peso_medicion and r.peso_medicion.valor is not none %}
+                {{ r.peso_medicion.valor }} kg
+              {% elif r.saturacion and r.saturacion.porcentaje is not none %}
+                {{ r.saturacion.porcentaje }}%
+              {% elif r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none %}
+                {{ r.glucosa_medicion.mg_dl }} mg/dL
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-xs text-muted-foreground/80 text-mono tracking-wide">
+              {{ r.fecha_registro|formato_fecha }}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.usuario %}
+                {% if r.usuario.username %}
+                  {% set display_name = r.usuario.username %}
+                {% else %}
+                  {% set display_name = r.usuario.nombres.split(' ')[0] ~ ' ' ~ r.usuario.apellidos.split(' ')[0] %}
+                {% endif %}
+                {% set initial = display_name[0]|upper %}
+                <div class="flex items-center justify-center">
+                  <div
+                    class="h-7 w-7 rounded-full bg-secondary/30 flex items-center justify-center overflow-hidden border border-border/60"
+                    title="{{ display_name }}">
+                    {% if r.usuario.foto_perfil %}
+                      <img src="{{ url_for('static', filename='uploads/profile_pics/' + r.usuario.foto_perfil) }}"
+                           alt="{{ display_name }}" class="h-full w-full object-cover">
+                    {% else %}
+                      <span class="text-[11px] font-semibold text-muted-foreground/80">
+                        {{ initial }}
+                      </span>
+                    {% endif %}
+                  </div>
+                </div>
+              {% else %}
+                <div class="flex items-center justify-center">
+                  <div
+                    class="h-7 w-7 rounded-full bg-muted flex items-center justify-center border border-border/40 text-[11px] font-semibold text-muted-foreground/80"
+                    title="Sistema">
+                    S
+                  </div>
+                </div>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.tension_arterial %}
+                {{ r.tension_arterial.observaciones or 'N/A' }}
+              {% elif r.peso_medicion and r.peso_medicion.valor is not none %}
+                {{ r.peso_medicion.observaciones or 'N/A' }}
+              {% elif r.saturacion and r.saturacion.porcentaje is not none %}
+                {{ r.saturacion.observaciones or 'N/A' }}
+              {% elif r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none %}
+                {{ r.glucosa_medicion.observaciones or 'N/A' }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="flex items-center justify-end">
+    <p id="resultsHistorialCount" class="text-[10px] text-muted-foreground/60 font-light">
+      Mostrando {{ registros|length if registros else 0 }} registros
+    </p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/signos_vitales_historial.js') }}" defer></script>
+{% endblock %}

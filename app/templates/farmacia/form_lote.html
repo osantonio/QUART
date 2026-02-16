@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Nuevo Lote{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('farmacia.inventario') }}" class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Registro de Nuevo Lote</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-6 shadow-sm">
+        <form method="POST" class="space-y-6">
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Medicamento *</label>
+                <select name="medicamento_id" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    <option value="" disabled selected>Seleccione un medicamento...</option>
+                    {% for m in medicamentos %}
+                    <option value="{{ m.id }}">{{ m.nombre }} ({{ m.presentacion }} - {{ m.concentracion }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Número de
+                        Lote</label>
+                    <input type="text" name="lote" placeholder="Ej: LOT-2024-001"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha de
+                        Vencimiento *</label>
+                    <input type="date" name="fecha_vencimiento" required
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Cantidad Inicial
+                        *</label>
+                    <input type="number" name="cantidad_inicial" required min="1"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Dosis por
+                        Unidad</label>
+                    <input type="text" name="dosis" placeholder="Ej: 500mg"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Origen /
+                        Tipo</label>
+                    <select name="origen"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                        <option value="Compra">Compra</option>
+                        <option value="Donación">Donación</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Proveedor</label>
+                    <input type="text" name="proveedor"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Observaciones</label>
+                <textarea name="observaciones" rows="3"
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none"
+                    placeholder="Opcional..."></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('farmacia.inventario') }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">
+                    Cancelar
+                </a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                    Registrar Lote
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

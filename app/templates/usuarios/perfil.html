@@ -100,7 +100,7 @@
                                 class="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/60">Sistema
                                 de Registro</span>
                             <time class="text-[10px] font-medium text-muted-foreground">
-                                {{ usuario.created_at.strftime('%d . %m . %Y') }}
+                                {{ usuario.created_at|formato_fecha }}
                             </time>
                         </div>
                         <div class="space-y-2">
@@ -150,7 +150,7 @@
                         {'label': 'Identificación', 'value': usuario.identificacion, 'icon': icons.id},
                         {'label': 'Correo electrónico', 'value': usuario.email, 'icon': icons.mail},
                         {'label': 'Teléfono', 'value': usuario.telefono, 'icon': icons.phone},
-                        {'label': 'Fecha de nacimiento', 'value': usuario.fecha_nacimiento, 'icon': icons.birth},
+                        {'label': 'Fecha de nacimiento', 'value': usuario.fecha_nacimiento|formato_fecha, 'icon': icons.birth},
                         {'label': 'Nombre de usuario', 'value': '@' ~ usuario.username, 'icon': icons.user},
                         {'label': 'Edad calculada', 'value': edad ~ ' años' if edad else 'No disponible', 'icon':
                         icons.age},

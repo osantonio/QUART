@@ -18,8 +18,21 @@ class Usuario(SQLModel, table=True):
     foto_perfil: Optional[str] = Field(default=None)
     created_at: datetime = Field(default_factory=datetime.now)
 
+    # Nuevos campos para IPS
+    genero: Optional[str] = None  # M, F, Otro
+    tipo_sangre: Optional[str] = None  # A+, A-, B+, B-, AB+, AB-, O+, O-
+
     # Relación RBAC
     roles: List["Rol"] = Relationship(back_populates="usuarios", link_model=RolUsuario)
+
+    # Relaciones con módulo Beneficiarios (Auditoría y Gestión)
+    visitantes: List["Visitante"] = Relationship(back_populates="usuario")
+    visitas_tramitadas: List["Visita"] = Relationship(back_populates="tramitado_por_usuario")
+    historial_prescripciones: List["HistorialPrescripcion"] = Relationship(back_populates="modificado_por_usuario")
+    historial_patologias: List["HistorialPatologia"] = Relationship(back_populates="modificado_por_usuario")
+    historia_clinica: List["HistoriaClinica"] = Relationship(back_populates="modificado_por_usuario")
+    signos_vitales_registrados: List["SignosVitales"] = Relationship(back_populates="usuario")
+    relaciones_parentesco: List["RelacionParentesco"] = Relationship(back_populates="usuario")
 
     def set_password(self, password: str) -> None:
         """Hash y guarda la contraseña"""

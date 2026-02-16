@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Parentesco{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ back_url }}" class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Asignar Parentesco</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-6">
+        <form method="POST" class="space-y-6">
+            {% if visitante_id %}
+            <input type="hidden" name="visitante_id" value="{{ visitante_id }}">
+            {% else %}
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Visitante *</label>
+                <select name="visitante_id" required class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    <option value="" disabled selected>Seleccione un visitante...</option>
+                    {% for v in visitantes %}
+                    <option value="{{ v.id }}">{{ v.apellidos }}, {{ v.nombres }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% if beneficiario_id %}
+                <input type="hidden" name="beneficiario_id" value="{{ beneficiario_id }}">
+                {% else %}
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Beneficiario</label>
+                    <select name="beneficiario_id" class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                        <option value="">Sin selección</option>
+                        {% for b in beneficiarios %}
+                        <option value="{{ b.id }}">{{ b.apellidos }}, {{ b.nombres }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Usuario</label>
+                    <select name="usuario_id" class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                        <option value="">Sin selección</option>
+                        {% for u in usuarios %}
+                        <option value="{{ u.id }}">{{ u.apellidos }}, {{ u.nombres }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Parentesco *</label>
+                <select name="parentesco_id" required class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    <option value="" disabled selected>Seleccione un parentesco...</option>
+                    {% for p in parentescos %}
+                    <option value="{{ p.id }}">{{ p.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ back_url }}" class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit" class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

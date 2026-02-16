@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Signos - {{ beneficiario.nombres }} {{ beneficiario.apellidos }}{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+  <div class="flex flex-row items-stretch justify-between">
+    <div>
+      <h1 class="text-5xl font-bold text-foreground">
+        Historial de {{ beneficiario.nombres.split(' ')[0] }} {{ beneficiario.apellidos.split(' ')[0] }}
+      </h1>
+      <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+        Registros individuales por medición para {{ beneficiario.nombres }} {{ beneficiario.apellidos }}.
+      </p>
+    </div>
+    <div class="flex items-start justify-end gap-3">
+      <a href="{{ url_for('beneficiarios.perfil', id=beneficiario.id) }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+         </svg>
+         Volver
+      </a>
+      <a href="{{ url_for('signos_vitales.asignar', beneficiario_id=beneficiario.id) }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+         </svg>
+         Registrar Signo
+      </a>
+    </div>
+  </div>
+
+  <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="border-b border-border bg-muted/50">
+          <tr>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">ID</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Registrado por</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Valor a medir</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Valor medido</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Fecha registro</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Observación</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border/40">
+          {% for r in registros %}
+          <tr class="hover:bg-secondary/5 transition-none">
+            <td class="px-6 py-3">
+              <span class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                {{ r.id }}
+              </span>
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.usuario %}
+                {{ r.usuario.nombres.split(' ')[0] }} {{ r.usuario.apellidos.split(' ')[0] }}
+              {% else %}
+                Sistema
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.tension_arterial %}
+                Tensión Arterial (mmHg)
+              {% elif r.peso_medicion and r.peso_medicion.valor is not none %}
+                Peso Corporal (kg)
+              {% elif r.saturacion and r.saturacion.porcentaje is not none %}
+                Oximetría (%)
+              {% elif r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none %}
+                Glucometría (mg/dL)
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.tension_arterial %}
+                {{ r.tension_arterial.sistolica or '—' }}/{{ r.tension_arterial.diastolica or '—' }} mmHg
+              {% elif r.peso_medicion and r.peso_medicion.valor is not none %}
+                {{ r.peso_medicion.valor }} kg
+              {% elif r.saturacion and r.saturacion.porcentaje is not none %}
+                {{ r.saturacion.porcentaje }}%
+              {% elif r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none %}
+                {{ r.glucosa_medicion.mg_dl }} mg/dL
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {{ r.fecha_registro|formato_fecha_hora }}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if r.tension_arterial %}
+                {{ r.tension_arterial.observaciones or 'N/A' }}
+              {% elif r.peso_medicion and r.peso_medicion.valor is not none %}
+                {{ r.peso_medicion.observaciones or 'N/A' }}
+              {% elif r.saturacion and r.saturacion.porcentaje is not none %}
+                {{ r.saturacion.observaciones or 'N/A' }}
+              {% elif r.glucosa_medicion and r.glucosa_medicion.mg_dl is not none %}
+                {{ r.glucosa_medicion.observaciones or 'N/A' }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

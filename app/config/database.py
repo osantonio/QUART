@@ -9,8 +9,16 @@ from sqlalchemy.orm import sessionmaker
 load_dotenv()
 DATABASE_URL = config.DATABASE_URL
 
-# Creamos el motor asíncrono
-engine = create_async_engine(DATABASE_URL)
+# Creamos el motor asíncrono con optimizaciones para evitar cierres de conexión
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,      # Verifica la conexión antes de usarla
+    pool_recycle=1800,       # Recicla conexiones cada 30 minutos
+    connect_args={
+        "command_timeout": 60,  # Tiempo máximo para una consulta
+        "timeout": 60           # Tiempo máximo para conectar
+    }
+)
 
 # Inicializamos el sessionmaker globalmente para evitar overhead en cada petición
 AsyncSessionLocal = sessionmaker(

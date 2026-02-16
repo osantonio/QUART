@@ -18,6 +18,7 @@ async def login():
             usuario = await AuthService.login(login_value, password)
             token = generate_token(usuario.id)
             session["token"] = token
+            session["user_id"] = usuario.id
             session["username"] = usuario.username
             session["foto_perfil"] = usuario.foto_perfil
             await flash("Inicio de sesión exitoso", "success")

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Alergia{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+            class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Asignar Alergia</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-6 shadow-sm">
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Seleccionar Alergia
+                    *</label>
+                <select name="alergia_id" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    <option value="" disabled selected>Seleccione una...</option>
+                    {% for a in alergias %}
+                    <option value="{{ a.id }}">{{ a.nombre }} ({{ a.categoria }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Severidad *</label>
+                    <select name="severidad" required
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                        <option value="Leve">Leve</option>
+                        <option value="Moderada">Moderada</option>
+                        <option value="Severa">Severa</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha
+                        Diagnóstico</label>
+                    <input type="date" name="fecha_diagnostico"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Notas
+                    Adicionales</label>
+                <textarea name="notas" rows="3"
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none"
+                    placeholder="Opcional..."></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                    Asignar Alergia
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

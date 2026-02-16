@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Beneficiarios - IPS{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+    <!-- Header -->
+    <div class="space-y-2">
+        <div class="flex flex-row items-stretch justify-between">
+            <div>
+                <h1 class="text-5xl font-bold text-foreground">Beneficiarios</h1>
+                <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+                    Gestión centralizada de beneficiarios de la IPS.
+                </p>
+            </div>
+
+            <div class="flex items-start justify-end gap-3">
+                {% if tiene_acceso('beneficiarios.crear') %}
+                <a href="{{ url_for('beneficiarios.crear') }}"
+                    class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4">
+                        </path>
+                    </svg>
+                    Nuevo Beneficiario
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra de búsqueda: Integrada -->
+    <div class="relative group">
+        <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-link">
+            <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Filtrar por nombre, identificación o habitación..."
+            class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-link focus:ring-4 focus:ring-link/10 transition-all outline-none placeholder:text-muted-foreground/20">
+    </div>
+
+    <!-- Tabla: Estética de Lista Minimalista -->
+    <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="border-b border-border bg-muted/50">
+                    <tr>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            ID</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Beneficiario</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Identificación</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Edad / Género</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 hidden">
+                            Habitación</th>
+                        <th
+                            class="px-6 py-3 text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+                            Operaciones</th>
+                    </tr>
+                </thead>
+                {% if beneficiarios %}
+                <tbody class="divide-y divide-border/40" id="beneficiarioTableBody">
+                    {% for b in beneficiarios %}
+                    <tr class="hover:bg-secondary/2 transition-none beneficiario-row"
+                        data-search="{{ (b.nombres + ' ' + b.apellidos + ' ' + (b.identificacion|string) + ' ' + (b.numero_habitacion|string if b.numero_habitacion else ''))|lower }}">
+                        <td class="px-6 py-3">
+                            <span
+                                class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                                {{ b.id }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="h-10 w-10 rounded bg-secondary/30 flex items-center justify-center shrink overflow-hidden border border-border">
+                                    <span
+                                        class="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60">
+                                        {{ b.nombres[0]|upper }}{{ b.apellidos[0]|upper }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-foreground/80 tracking-tight">{{
+                                        b.nombres }} {{ b.apellidos }}</p>
+                                    <p class="text-[10px] font-medium text-muted-foreground/40">{{ b.eps or 'Sin EPS' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3">
+                            <span
+                                class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                                {{ b.identificacion }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="space-y-1">
+                                <p class="text-[11px] text-foreground/70 font-medium">{{ b.edad }} años</p>
+                                <span class="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">{{
+                                    b.genero }}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-3 hidden">
+                            {% if b.numero_habitacion %}
+                            <span
+                                class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                                Hab. {{ b.numero_habitacion }}
+                            </span>
+                            {% else %}
+                            <span class="text-muted-foreground/40 italic text-xs">No asignada</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3">
+                            <div class="flex items-center justify-center gap-2">
+                                <!-- VER: Success -->
+                                <a href="{{ url_for('beneficiarios.perfil', id=b.id) }}"
+                                    class="p-2.5 bg-success text-success-foreground border border-success/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-success/10"
+                                    title="Ver perfil">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                {% if tiene_acceso('beneficiarios.editar') %}
+                                <!-- EDITAR: Warning -->
+                                <a href="{{ url_for('beneficiarios.editar', id=b.id) }}"
+                                    class="p-2.5 bg-warning text-warning-foreground border border-warning/20 rounded-sm hover:opacity-90 transition-all shadow-sm shadow-warning/10"
+                                    title="Editar beneficiario">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                        </path>
+                                    </svg>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Empty state: Atenuado -->
+        <div id="emptyState" class="hidden py-24 text-center space-y-4">
+            <div class="inline-flex p-4 bg-secondary/10 rounded-full text-muted-foreground/30">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-lg font-medium text-foreground/60">Búsqueda sin resultados</h3>
+                <p class="text-xs text-muted-foreground/40 font-light italic">No existe coincidencia en el registro para
+                    los términos indicados.</p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Sin beneficiarios: Atenuado -->
+    <div class="border border-border/40 rounded-sm py-32 text-center space-y-6 bg-background">
+        <div class="inline-flex p-5 bg-secondary/10 rounded-full text-muted-foreground/20">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                </path>
+            </svg>
+        </div>
+        <div class="space-y-1">
+            <h3 class="text-xl font-light text-foreground/60">Registro de Beneficiarios vacío</h3>
+            <p class="text-sm text-muted-foreground/40 font-light">No se han registrado beneficiarios en la base de
+                datos.</p>
+        </div>
+        {% if tiene_acceso('beneficiarios.crear') %}
+        <div class="pt-4">
+            <a href="{{ url_for('beneficiarios.crear') }}"
+                class="btn-primary px-6 py-3 text-[11px] font-bold uppercase tracking-widest rounded shadow-sm shadow-primary/20">
+                Registrar Primer Beneficiario &rarr;
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Contador de resultados -->
+    <div class="flex items-center justify-end">
+        <p id="resultsCount" data-entity="beneficiarios" class="text-[10px] text-muted-foreground/60 font-light">
+            Mostrando {{ beneficiarios|length }} de {{ total_beneficiarios if total_beneficiarios else
+            beneficiarios|length }} beneficiarios
+        </p>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/beneficiarios_listar_search.js') }}" defer></script>
+{% endblock %}

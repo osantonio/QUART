@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Signos Vitales{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+            class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Registro de Signos Vitales</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-8 shadow-sm">
+        <form method="POST" class="space-y-8">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4 p-4 border border-border/40 rounded-sm bg-secondary/10">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary border-b border-border/40 pb-1">
+                        Tensión Arterial (mmHg)</h3>
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 space-y-1">
+                            <label class="text-[9px] font-bold text-muted-foreground uppercase">Sistólica</label>
+                            <input type="number" name="tension_arterial_sistolica" placeholder="120"
+                                class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <span class="pt-6 text-muted-foreground">/</span>
+                        <div class="flex-1 space-y-1">
+                            <label class="text-[9px] font-bold text-muted-foreground uppercase">Diastólica</label>
+                            <input type="number" name="tension_arterial_diastolica" placeholder="80"
+                                class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Observaciones TA (opcional)</label>
+                        <input type="text" name="observaciones_tension" placeholder="Ej. paciente refiere cefalea"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-4 p-4 border border-border/40 rounded-sm bg-secondary/10">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary border-b border-border/40 pb-1">
+                        Peso Corporal (kg)</h3>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Peso</label>
+                        <input type="number" step="0.01" name="peso" placeholder="70.5"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Observaciones Peso (opcional)</label>
+                        <input type="text" name="observaciones_peso" placeholder="Ej. ayuno o postprandial"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-4 p-4 border border-border/40 rounded-sm bg-secondary/10">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary border-b border-border/40 pb-1">
+                        Oximetría (%)</h3>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Saturación de Oxígeno</label>
+                        <input type="number" name="saturacion_oxigeno" placeholder="98"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Observaciones O₂ (opcional)</label>
+                        <input type="text" name="observaciones_saturacion" placeholder="Ej. en reposo o con ejercicio"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-4 p-4 border border-border/40 rounded-sm bg-secondary/10">
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-primary border-b border-border/40 pb-1">
+                        Glucometría (mg/dL)</h3>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Nivel de Glucosa</label>
+                        <input type="number" name="glucosa" placeholder="100"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[9px] font-bold text-muted-foreground uppercase">Observaciones Glucosa (opcional)</label>
+                        <input type="text" name="observaciones_glucosa" placeholder="Ej. hora de última comida"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                    Guardar Registro
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

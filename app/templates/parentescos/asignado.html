@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Parentescos Asignados{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-foreground">Parentescos Asignados</h1>
+            <p class="text-sm text-muted-foreground/70">Listado de todas las relaciones registradas entre visitantes y beneficiarios/usuarios.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('parentescos.asignar') }}"
+               class="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors inline-flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Asignar
+            </a>
+            <a href="{{ url_for('parentescos.crear') }}"
+               class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Crear
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-secondary/30">
+                    <tr>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Fecha</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Visitante</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Parentesco</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Beneficiario</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Usuario</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/20">
+                    {% for r in relaciones %}
+                    <tr class="hover:bg-secondary/10 transition-colors">
+                        <td class="px-6 py-3">{{ r.created_at.strftime('%d/%m/%Y %H:%M') if r.created_at else '—' }}</td>
+                        <td class="px-6 py-3">
+                            {% if r.visitante %}
+                                {{ r.visitante.apellidos }}, {{ r.visitante.nombres }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3">{{ r.parentesco.nombre if r.parentesco else '—' }}</td>
+                        <td class="px-6 py-3">
+                            {% if r.beneficiario %}
+                                {{ r.beneficiario.apellidos }}, {{ r.beneficiario.nombres }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3">
+                            {% if r.usuario %}
+                                {{ r.usuario.apellidos }}, {{ r.usuario.nombres }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center text-muted-foreground italic">
+                            No hay parentescos asignados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Lotes - {{ medicamento.nombre }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('farmacia.inventario') }}" class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-foreground">Detalle de Lotes</h1>
+            <p class="text-sm text-muted-foreground">{{ medicamento.nombre }} ({{ medicamento.presentacion }})</p>
+        </div>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm overflow-hidden">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-secondary/30 text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+                <tr>
+                    <th class="px-6 py-4">Lote #</th>
+                    <th class="px-6 py-4">Asignado a</th>
+                    <th class="px-6 py-4 text-center">Vencimiento</th>
+                    <th class="px-6 py-4 text-center">Stock / Inicial</th>
+                    <th class="px-6 py-4 text-right">Estado</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border/20">
+                {% for lote in lotes %}
+                <tr class="hover:bg-secondary/10 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-foreground uppercase tracking-wider">{{ lote.lote or 'SN-' ~ lote.id
+                            }}</div>
+                        <div class="text-[10px] text-muted-foreground">Origen: {{ lote.origen }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="text-xs {{ 'text-primary font-medium' if 'Stock General' not in lote.beneficiario_nombre else 'text-muted-foreground italic' }}">
+                            {{ lote.beneficiario_nombre }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <div
+                            class="text-xs font-medium {{ 'text-destructive' if lote.esta_vencido else 'text-foreground' }}">
+                            {{ lote.fecha_vencimiento }}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="font-bold text-foreground">{{ lote.cantidad_disponible }}</span>
+                        <span class="text-muted-foreground mx-1">/</span>
+                        <span class="text-[10px] text-muted-foreground">{{ lote.cantidad_inicial }}</span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        {% if lote.esta_vencido %}
+                        <span
+                            class="text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-destructive/10 text-destructive border border-destructive/20">Vencido</span>
+                        {% elif lote.cantidad_disponible == 0 %}
+                        <span
+                            class="text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-muted text-muted-foreground">Vacío</span>
+                        {% else %}
+                        <span
+                            class="text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Activo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

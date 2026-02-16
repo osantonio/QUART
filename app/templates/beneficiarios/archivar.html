@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Archivar Beneficiario{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('beneficiarios.perfil', id=beneficiario.id) }}"
+            class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Proceso de Egreso (Archivo)</h1>
+    </div>
+
+    <div class="bg-card border border-destructive/20 rounded-sm p-8 shadow-sm">
+        <div class="mb-6 pb-4 border-b border-border/20">
+            <p class="text-sm text-foreground">Está a punto de archivar el perfil de <span class="font-bold">{{
+                    beneficiario.nombres }} {{ beneficiario.apellidos }}</span>.</p>
+            <p class="text-xs text-muted-foreground mt-2">Este proceso moverá toda la información al histórico de
+                Ex-Beneficiarios y el registro actual dejará de ser visible en el listado activo.</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Motivo del Egreso
+                    *</label>
+                <select name="motivo_egreso" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    <option value="Voluntario">Voluntario</option>
+                    <option value="Fallecimiento">Fallecimiento</option>
+                    <option value="Traslado a otra IPS">Traslado a otra IPS</option>
+                    <option value="Fin del tratamiento">Fin del tratamiento</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Observaciones Finales /
+                    Notas de Egreso</label>
+                <textarea name="observaciones_egreso" rows="4" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none"
+                    placeholder="Detalle el estado final del beneficiario al momento del egreso..."></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('beneficiarios.perfil', id=beneficiario.id) }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-destructive text-destructive-foreground hover:opacity-90 transition-opacity">
+                    Confirmar Egreso
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

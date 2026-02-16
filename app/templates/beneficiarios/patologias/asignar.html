@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Patología{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+            class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Asignar Patología</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-8 shadow-sm">
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Patología *</label>
+                <select name="patologia_id" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    <option value="" disabled selected>Seleccione una...</option>
+                    {% for p in patologias %}
+                    <option value="{{ p.id }}">{{ p.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nivel de
+                        Dependencia *</label>
+                    <select name="nivel_dependencia" required
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                        <option value="Independiente">Independiente</option>
+                        <option value="Dependencia Parcial">Dependencia Parcial</option>
+                        <option value="Dependencia Total">Dependencia Total</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha
+                        Diagnóstico</label>
+                    <input type="date" name="fecha_diagnostico"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-4 border-t border-border/20 pt-4">
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="genera_discapacidad" id="gd" value="1"
+                        class="w-4 h-4 rounded border-border/40 accent-primary">
+                    <label for="gd" class="text-xs font-bold uppercase tracking-widest text-primary/80">Genera
+                        Discapacidad</label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-muted-foreground uppercase">Tipo de
+                            Discapacidad</label>
+                        <input type="text" name="tipo_discapacidad" placeholder="Física, Cognitiva..."
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-muted-foreground uppercase">Grado de
+                            Discapacidad</label>
+                        <input type="text" name="grado_discapacidad" placeholder="Ej: 30%"
+                            class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Notas de
+                    Seguimiento</label>
+                <textarea name="notas" rows="3"
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none"
+                    placeholder="Opcional..."></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                    Asignar Patología
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

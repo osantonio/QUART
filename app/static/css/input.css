@@ -19,23 +19,23 @@
   --popover: #ffffff;
   --popover-foreground: #212529;
 
-  /* Brand & Contrast - Pastel Palette */
-  --primary: #cfe2ff;
-  --primary-foreground: #084298;
+  /* Brand & Contrast - Vibrant Primary for Buttons */
+  --primary: #0d6efd;
+  --primary-foreground: #ffffff;
 
   --brand: #212529;
   --brand-foreground: #ffffff;
 
-  --secondary: #e9ecef;
-  --secondary-foreground: #495057;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #475569;
 
   --muted: #f8f9fa;
   --muted-foreground: #6c757d;
 
-  --accent: #f1f3f5;
-  --accent-foreground: #212529;
+  --accent: #f1f5f9;
+  --accent-foreground: #1e293b;
 
-  /* Status / Buttons - Soft Pastel */
+  /* Status / Buttons - Vibrant Colors */
   --success: #d1e7dd;
   --success-foreground: #0f5132;
   --warning: #fff3cd;
@@ -43,11 +43,11 @@
   --destructive: #f8d7da;
   --destructive-foreground: #842029;
 
-  /* Navigation / Links */
-  --link: #0d6efd;
-  --link-hover: #0a58ca;
-  --nav-muted: #6c757d;
-  --nav-hover: #212529;
+  /* Navigation / Links - Distinct from Primary */
+  --link: #0a58ca;
+  --link-hover: #084298;
+  --nav-muted: #64748b;
+  --nav-hover: #0f172a;
 
   /* Structure */
   --border: #dee2e6;
@@ -62,6 +62,12 @@
   --chart-3: #0dcaf0;
   --chart-4: #ffc107;
   --chart-5: #dc3545;
+
+  /* Paleta específica para Signos Vitales */
+  --signos-tension: #dc3545;      /* Rojo - tensión arterial */
+  --signos-peso: #0d6efd;         /* Azul - peso corporal */
+  --signos-oximetria: #198754;    /* Verde - oximetría */
+  --signos-glucometria: #ffc107;  /* Amarillo - glucometría */
 }
 
 .dark {
@@ -76,20 +82,20 @@
   --popover: #2c3034;
   --popover-foreground: #f8f9fa;
 
-  --primary: #032845;
-  --primary-foreground: #6ea8fe;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
 
   --brand: #ffffff;
   --brand-foreground: #212529;
 
-  --secondary: #343a40;
-  --secondary-foreground: #dee2e6;
+  --secondary: #475569;
+  --secondary-foreground: #e2e8f0;
 
   --muted: #2c3034;
   --muted-foreground: #adb5bd;
 
-  --accent: #2c3034;
-  --accent-foreground: #f8f9fa;
+  --accent: #334155;
+  --accent-foreground: #f1f5f9;
 
   /* Status / Buttons - Dark Mode Optimization (Vibrant & Premium) */
   --success: #163b2a;
@@ -99,11 +105,11 @@
   --destructive: #3f1212;
   --destructive-foreground: #f87171;
 
-  /* Navigation / Links - Dark */
-  --link: #6ea8fe;
-  --link-hover: #9ec5fe;
-  --nav-muted: #adb5bd;
-  --nav-hover: #f8f9fa;
+  /* Navigation / Links - Distinct and Bright */
+  --link: #60a5fa;
+  --link-hover: #93c5fd;
+  --nav-muted: #94a3b8;
+  --nav-hover: #f1f5f9;
 
   /* Structure */
   --border: #495057;
@@ -117,6 +123,12 @@
   --chart-3: #6edff6;
   --chart-4: #ffca2c;
   --chart-5: #ea868f;
+
+  /* Paleta Signos Vitales - modo oscuro */
+  --signos-tension: #ea868f;
+  --signos-peso: #3788fd;
+  --signos-oximetria: #1ea869;
+  --signos-glucometria: #ffca2c;
 }
 
 @theme {
@@ -161,6 +173,12 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Tokens de color para Signos Vitales */
+  --color-signos-tension: var(--signos-tension);
+  --color-signos-peso: var(--signos-peso);
+  --color-signos-oximetria: var(--signos-oximetria);
+  --color-signos-glucometria: var(--signos-glucometria);
 }
 
 @layer base {
@@ -170,7 +188,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", "Geist", sans-serif;
+    font-family: "Geist","Inter",  sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
@@ -196,5 +214,28 @@
 
   .contrast-border {
     @apply border-foreground/10 dark:border-white/10;
+  }
+
+  /* Button variants */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors;
+  }
+
+  /* Link styles */
+  .link {
+    @apply text-link hover:text-link-hover underline-offset-2 transition-colors;
+  }
+
+  .link-muted {
+    @apply text-nav-muted hover:text-nav-hover transition-colors;
+  }
+
+  /* Accent backgrounds */
+  .accent-bg {
+    @apply bg-accent text-accent-foreground;
   }
 }

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Archivo de Beneficiarios{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-foreground">Archivo Histórico</h1>
+            <p class="text-sm text-muted-foreground">Listado de ex-beneficiarios que han egresado de la institución</p>
+        </div>
+        <a href="{{ url_for('beneficiarios.listar') }}"
+            class="text-xs font-bold uppercase tracking-widest text-primary hover:underline">
+            &larr; Volver a Listado Activo
+        </a>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm overflow-hidden">
+        <table class="w-full text-left text-sm">
+            <thead class="bg-secondary/30 text-muted-foreground font-medium uppercase text-[10px] tracking-widest">
+                <tr>
+                    <th class="px-6 py-4">Ex-Beneficiario</th>
+                    <th class="px-6 py-4">Identificación</th>
+                    <th class="px-6 py-4">Ciclo en IPS</th>
+                    <th class="px-6 py-4">Motivo Egreso</th>
+                    <th class="px-6 py-4 text-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-border/20">
+                {% for ex in ex_beneficiarios %}
+                <tr class="hover:bg-secondary/10 transition-colors">
+                    <td class="px-6 py-4">
+                        <div class="font-medium text-foreground">{{ ex.nombres }} {{ ex.apellidos }}</div>
+                        <div class="text-[10px] text-muted-foreground">G: {{ ex.genero }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-muted-foreground font-mono">
+                        {{ ex.identificacion }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-[11px] text-foreground">Ing: {{ ex.fecha_ingreso }}</div>
+                        <div class="text-[11px] text-destructive/70">Egr: {{ ex.fecha_egreso }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span
+                            class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border border-border/40 bg-secondary/50">
+                            {{ ex.motivo_egreso }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <button class="text-primary hover:underline text-xs font-medium"
+                            onclick="alert('Funcionalidad de ver JSON en desarrollo')">Ver Datos Históricos</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-12 text-center text-muted-foreground italic">
+                        El archivo histórico se encuentra vacío.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

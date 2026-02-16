@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar eliminación{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="bg-card border border-border/40 rounded-sm p-6 space-y-4">
+        <h1 class="text-xl font-bold text-foreground">Confirmar eliminación</h1>
+        <p class="text-sm text-muted-foreground">
+            Estás a punto de eliminar el parentesco seleccionado. Esta acción no se puede deshacer.
+            Si existen relaciones que dependan de este registro, la eliminación puede fallar.
+        </p>
+
+        <div class="bg-secondary/20 border border-border/30 rounded-sm p-4 space-y-2">
+            <p class="text-sm"><span class="font-bold">Nombre:</span> {{ p.nombre }}</p>
+            <p class="text-sm"><span class="font-bold">Descripción:</span> {{ p.descripcion or '—' }}</p>
+            <p class="text-sm"><span class="font-bold">Contacto emergencia:</span> {{ 'Sí' if p.contacto_emergencia else 'No' }}</p>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <a href="{{ url_for('parentescos.listar') }}"
+               class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors">
+               Cancelar
+            </a>
+            <form method="POST" action="{{ url_for('parentescos.eliminar', id=p.id) }}">
+                <button type="submit"
+                        class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 bg-destructive/90 text-destructive-foreground hover:bg-destructive transition-colors">
+                    Eliminar definitivamente
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

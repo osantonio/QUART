@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Catálogo de Parentescos{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-bold text-foreground">Parentescos</h1>
+            <p class="text-sm text-muted-foreground/70">Catálogo utilizado para relaciones de parentesco.</p>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+            <a href="{{ url_for('parentescos.crear') }}"
+               class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Crear
+            </a>
+            <a href="{{ url_for('parentescos.asignar') }}"
+               class="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors inline-flex items-center gap-3">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                </svg>
+                Asignar
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+                <thead class="bg-secondary/30">
+                    <tr>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Nombre</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Descripción</th>
+                        <th class="text-left px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Contacto Emergencia</th>
+                        <th class="text-right px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/20">
+                    {% for p in parentescos %}
+                    <tr class="hover:bg-secondary/10 transition-colors">
+                        <td class="px-6 py-3 font-medium">{{ p.nombre }}</td>
+                        <td class="px-6 py-3">{{ p.descripcion or '—' }}</td>
+                        <td class="px-6 py-3">{{ 'Sí' if p.contacto_emergencia else 'No' }}</td>
+                        <td class="px-6 py-3 text-right">
+                            <div class="inline-flex items-center gap-2">
+                                <a href="{{ url_for('parentescos.editar', id=p.id) }}"
+                                   class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors">
+                                   Editar
+                                </a>
+                                <a href="{{ url_for('parentescos.confirmar_eliminar', id=p.id) }}"
+                                   class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 text-destructive hover:bg-secondary/30 transition-colors">
+                                   Eliminar
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-muted-foreground italic">
+                            No hay parentescos registrados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

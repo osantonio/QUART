@@ -85,6 +85,7 @@ async def editar():
             usuario.apellidos = form.get("apellidos")
             usuario.telefono = form.get("telefono")
             usuario.fecha_nacimiento = form.get("fecha_nacimiento")
+            usuario.genero = form.get("genero")
             
             # Manejar carga de foto de perfil
             foto = files.get("foto_perfil")

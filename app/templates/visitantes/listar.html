@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Visitantes{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+    <div class="space-y-2">
+        <div class="flex flex-row items-stretch justify-between">
+            <div>
+                <h1 class="text-5xl font-bold text-foreground">Visitantes</h1>
+                <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+                    Gestión centralizada de visitantes asociados a beneficiarios.
+                </p>
+            </div>
+            <div class="flex items-start justify-end gap-3">
+                <a href="{{ url_for('visitantes.crear') }}"
+                   class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Crear Visitante
+                </a>
+                <a href="{{ url_for('parentescos.listar') }}"
+                   class="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors inline-flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Gestionar Parentescos
+                </a>
+                <a href="{{ url_for('parentescos.asignar') }}"
+                   class="px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors inline-flex items-center gap-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Asignar Parentesco
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="relative group">
+        <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-link">
+            <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <input type="text" id="searchInput" placeholder="Filtrar por nombre, teléfono o beneficiario..."
+            class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-link focus:ring-4 focus:ring-link/10 transition-all outline-none placeholder:text-muted-foreground/20">
+    </div>
+
+    <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="border-b border-border bg-muted/50">
+                    <tr>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">ID</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Nombre</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Beneficiario</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Teléfono</th>
+                        <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border/40" id="userTableBody">
+                    {% for v in visitantes %}
+                    <tr class="hover:bg-secondary/2 transition-none user-row"
+                        data-search="{{ (v.nombres + ' ' + v.apellidos + ' ' + (v.telefono or '') + ' ' + (v.beneficiario.apellidos + ' ' + v.beneficiario.nombres if v.beneficiario else ''))|lower }}">
+                        <td class="px-6 py-3">
+                            <span class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                                {{ v.id }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-3 font-medium">{{ v.nombres }} {{ v.apellidos }}</td>
+                        <td class="px-6 py-3">
+                            {% if v.beneficiario %}
+                                {{ v.beneficiario.apellidos }}, {{ v.beneficiario.nombres }}
+                            {% else %}
+                                <span class="text-[10px] text-muted-foreground italic">Sin asociación</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-3">{{ v.telefono }}</td>
+                        <td class="px-6 py-3 text-right">
+                            <div class="inline-flex items-center gap-2">
+                                {% if v.beneficiario %}
+                                <a href="{{ url_for('visitantes.registrar_visita', beneficiario_id=v.beneficiario.id) }}"
+                                   class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors">
+                                   Registrar Visita
+                                </a>
+                                <a href="{{ url_for('parentescos.asignar', visitante_id=v.id) }}"
+                                   class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors">
+                                   Parentesco
+                                </a>
+                                <a href="{{ url_for('beneficiarios.perfil', id=v.beneficiario.id) }}"
+                                   class="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 hover:bg-secondary/30 transition-colors">
+                                   Ver Beneficiario
+                                </a>
+                                {% else %}
+                                <span class="text-[10px] text-muted-foreground/70">Asigne beneficiario</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-8 text-center text-muted-foreground italic">
+                            No hay visitantes registrados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="emptyState" class="hidden py-24 text-center space-y-4">
+        <div class="inline-flex p-4 bg-secondary/10 rounded-full text-muted-foreground/30">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+        <div class="space-y-1">
+            <h3 class="text-lg font-medium text-foreground/60">Búsqueda sin resultados</h3>
+            <p class="text-xs text-muted-foreground/40 font-light italic">No existe coincidencia en el registro para
+                los términos indicados.</p>
+        </div>
+    </div>
+    <div class="flex items-center justify-end">
+        <p id="resultsCount" data-entity="visitantes" class="text-[10px] text-muted-foreground/60 font-light">
+            Mostrando {{ visitantes|length }} de {{ visitantes|length }} visitantes
+        </p>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/usuarios_listar_search.js') }}" defer></script>
+{% endblock %}

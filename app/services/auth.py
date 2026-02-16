@@ -21,6 +21,8 @@ class AuthService:
         confirm_password = datos.get("confirm_password")
         telefono = datos.get("telefono")
         fecha_nacimiento = datos.get("fecha_nacimiento")
+        genero = datos.get("genero")
+        tipo_sangre = datos.get("tipo_sangre")
 
         # 1. Validaciones básicas
         if not all([identificacion, nombres, apellidos, username, email, password, confirm_password]):
@@ -53,7 +55,9 @@ class AuthService:
                 username=username,
                 email=email,
                 telefono=telefono,
-                fecha_nacimiento=fecha_nacimiento
+                fecha_nacimiento=fecha_nacimiento,
+                genero=genero,
+                tipo_sangre=tipo_sangre
             )
             nuevo_usuario.set_password(password)
 

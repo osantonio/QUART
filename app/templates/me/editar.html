@@ -82,6 +82,16 @@
                             placeholder="+57 300 000 0000">
                     </div>
                     <div class="space-y-3">
+                        <label for="genero"
+                               class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Género</label>
+                        <select id="genero" name="genero"
+                                class="w-full bg-secondary/10 border border-border/40 rounded px-4 py-3 text-sm focus:border-foreground/30 focus:ring-0 transition-none outline-none">
+                            <option value="M" {{ 'selected' if usuario.genero=='M' else '' }}>Masculino</option>
+                            <option value="F" {{ 'selected' if usuario.genero=='F' else '' }}>Femenino</option>
+                            <option value="Otro" {{ 'selected' if usuario.genero=='Otro' else '' }}>Otro</option>
+                        </select>
+                    </div>
+                    <div class="space-y-3">
                         <label for="fecha_nacimiento"
                             class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Nacimiento</label>
                         <input id="fecha_nacimiento" name="fecha_nacimiento" type="date"

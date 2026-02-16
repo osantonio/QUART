@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Listado de Beneficiarios - Últimos Signos Vitales{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div class="space-y-2">
+      <h1 class="text-4xl font-bold text-foreground">Signos Vitales</h1>
+      <p class="text-sm text-muted-foreground/60 font-light max-w-md leading-relaxed">
+        Gestión centralizada de últimos signos por beneficiario.
+      </p>
+    </div>
+    <div class="flex flex-col items-stretch sm:items-end gap-2">
+      <a href="{{ url_for('signos_vitales.historial') }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+           <circle cx="12" cy="12" r="9" stroke-width="2"/>
+         </svg>
+         Historial general
+      </a>
+      <a href="{{ url_for('beneficiarios.listar') }}"
+         class="btn-primary px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-sm inline-flex items-center gap-3 shadow-sm shadow-primary/20">
+         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+           <path d="M4 6h10M4 10h10M4 14h10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+           <circle cx="18" cy="8" r="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+           <circle cx="18" cy="14" r="2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+         </svg>
+         Listado de beneficiarios
+      </a>
+    </div>
+  </div>
+
+  <div class="relative group">
+    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-link">
+      <svg class="h-4 w-4 text-muted-foreground/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <input type="text" id="searchInput" placeholder="Filtrar por nombre o ID..."
+           class="w-full pl-12 pr-4 py-3 bg-background border border-border rounded-sm text-sm focus:border-link focus:ring-4 focus:ring-link/10 transition-all outline-none placeholder:text-muted-foreground/20">
+  </div>
+
+  <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left">
+        <thead class="border-b border-border bg-muted/50">
+          <tr>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">ID</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Beneficiario</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Tensión Arterial (mmHg)</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Peso Corporal (kg)</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Oximetría (%)</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Glucometría (mg/dL)</th>
+            <th class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-border/40" id="userTableBody">
+          {% for item in items %}
+          <tr class="hover:bg-secondary/5 transition-none user-row"
+              data-search="{{ (item.beneficiario.nombres + ' ' + item.beneficiario.apellidos + ' ' + (item.beneficiario.id|string))|lower }}">
+            <td class="px-6 py-3 text-sm">
+              <span class="text-[11px] font-bold uppercase tracking-widest text-foreground/60 bg-secondary/20 px-2 py-1 rounded">
+                {{ item.beneficiario.id }}
+              </span>
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {{ item.beneficiario.nombres.split(' ')[0] }} {{ item.beneficiario.apellidos.split(' ')[0] }}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if item.ta %}
+                {{ item.ta.sistolica or '—' }}/{{ item.ta.diastolica or '—' }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if item.peso and item.peso.valor %}
+                {{ item.peso.valor }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if item.o2 and item.o2.porcentaje %}
+                {{ item.o2.porcentaje }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3 text-sm">
+              {% if item.glucosa and item.glucosa.mg_dl %}
+                {{ item.glucosa.mg_dl }}
+              {% else %}
+                <span class="text-muted-foreground/50 italic">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-6 py-3">
+              <div class="flex items-center gap-2">
+                <a href="{{ url_for('signos_vitales.asignar', beneficiario_id=item.beneficiario.id) }}" aria-label="Registrar Signos"
+                   class="h-8 w-8 flex items-center justify-center rounded hover:bg-secondary/20">
+                  <svg class="w-4 h-4 text-[#0d6efd]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </a>
+                <a href="{{ url_for('signos_vitales.historial_beneficiario', beneficiario_id=item.beneficiario.id) }}" aria-label="Ver Historial"
+                   class="h-8 w-8 flex items-center justify-center rounded hover:bg-secondary/20">
+                  <svg class="w-4 h-4 text-[#28a745]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 8v4l3 3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                  </svg>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="emptyState" class="hidden py-24 text-center space-y-4">
+    <div class="inline-flex p-4 bg-secondary/10 rounded-full text-muted-foreground/30">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <div class="space-y-1">
+      <h3 class="text-lg font-medium text-foreground/60">Búsqueda sin resultados</h3>
+      <p class="text-xs text-muted-foreground/40 font-light italic">No existe coincidencia en el registro para los términos indicados.</p>
+    </div>
+  </div>
+  <div class="flex items-center justify-end">
+    <p id="resultsCount" data-entity="beneficiarios" class="text-[10px] text-muted-foreground/60 font-light">
+      Mostrando {{ items|length if items else 0 }} beneficiarios
+    </p>
+  </div>
+</div>
+<script src="{{ url_for('static', filename='js/usuarios_listar_search.js') }}" defer></script>
+{% endblock %}

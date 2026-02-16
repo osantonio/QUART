@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Peso{% endblock %}
+
+{% block content %}
+<div class="animate-in fade-in duration-500 space-y-6">
+  <div class="space-y-2">
+    <h1 class="text-4xl font-bold text-foreground">Historial de Peso</h1>
+    {% if beneficiario %}
+    <p class="text-sm text-muted-foreground/60 font-light">
+      {{ beneficiario.nombres }} {{ beneficiario.apellidos }}
+    </p>
+    {% endif %}
+  </div>
+
+  {% if error %}
+  <div class="border border-border/40 bg-background rounded-sm p-4 text-sm text-muted-foreground/70">
+    {{ error }}
+  </div>
+  {% endif %}
+
+  <div class="border border-border/40 bg-background rounded-sm p-5 space-y-4 flex flex-col" data-imc-historial-endpoint="{{ url_for('imc.imc_historial', id=beneficiario.id if beneficiario else 0) }}?format=json">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <h3 class="text-lg font-medium text-foreground/60">Evolución del Peso (kg)</h3>
+      <div class="flex flex-wrap gap-2">
+        <button id="pesoExportPng"
+          class="px-4 py-2 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-widest rounded-sm hover:opacity-90 transition-none shadow-sm shadow-primary/20">
+          Exportar PNG
+        </button>
+        <button id="pesoResetZoom"
+          class="px-4 py-2 border border-border/60 text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-none">
+          Reset Zoom
+        </button>
+      </div>
+    </div>
+    <div class="border border-border rounded-sm bg-background overflow-hidden shadow-sm shadow-black/5 p-4 flex-1 w-full" style="height:40vh;max-height:360px;min-height:180px;transition:height 0.3s ease;">
+      <canvas id="pesoChart" height="250" class="max-w-full"></canvas>
+    </div>
+    <div id="pesoMensaje" class="text-[11px] text-muted-foreground/60"></div>
+  </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+<script src="{{ url_for('static', filename='js/signos_vitales_imc_historial.js') }}"></script>
+{% endblock %}

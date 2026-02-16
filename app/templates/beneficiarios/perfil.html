@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ beneficiario.nombres }} {{ beneficiario.apellidos }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Perfil -->
+    <div
+        class="flex flex-col md:flex-row items-center gap-6 bg-card border border-border/40 p-8 rounded-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-4">
+            <a href="{{ url_for('hclinica.historia_clinica', id=beneficiario.id) }}"
+                class="link text-[10px] font-bold uppercase tracking-widest">
+                Ver Historia Clínica &rarr;
+            </a>
+        </div>
+
+        <div
+            class="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center text-primary text-4xl font-bold border-4 border-background">
+            {{ beneficiario.nombres[0] }}{{ beneficiario.apellidos[0] }}
+        </div>
+
+        <div class="text-center md:text-left space-y-2">
+            <h1 class="text-3xl font-bold text-foreground">{{ beneficiario.nombres }} {{ beneficiario.apellidos }}</h1>
+            <div class="flex flex-wrap justify-center md:justify-start gap-2">
+                <span class="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-xs font-medium">{{
+                    beneficiario.edad }} años</span>
+                <span class="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-xs font-medium">{{
+                    beneficiario.genero }}</span>
+                <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">{{
+                    beneficiario.tipo_sangre }}</span>
+                {% if beneficiario.numero_habitacion %}
+                <span
+                    class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-xs font-bold border border-emerald-500/20">Hab.
+                    {{ beneficiario.numero_habitacion }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="md:ml-auto flex gap-2">
+            {% if tiene_acceso('beneficiarios.editar') %}
+            <a href="{{ url_for('beneficiarios.editar', id=beneficiario.id) }}"
+                class="px-4 py-2 bg-secondary/50 hover:bg-secondary text-foreground text-xs font-bold uppercase tracking-widest rounded transition-colors border border-border/40">
+                Editar Perfil
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Grid de Información -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Columna Izquierda: Información Básica -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="bg-card border border-border/40 rounded-sm overflow-hidden">
+                <div class="bg-secondary/30 px-6 py-3 border-b border-border/40">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Información Detallada
+                    </h3>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                            Identificación</p>
+                        <p class="text-sm font-medium">{{ beneficiario.identificacion }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Fecha
+                            Nacimiento</p>
+                        <p class="text-sm font-medium">{{ beneficiario.fecha_nacimiento }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">EPS</p>
+                        <p class="text-sm font-medium">{{ beneficiario.eps or 'No registrada' }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Estatura</p>
+                        <p class="text-sm font-medium">{{ beneficiario.estatura }} cm</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Ciudad
+                            Origen</p>
+                        <p class="text-sm font-medium">{{ beneficiario.ciudad_origen or 'N/A' }}, {{
+                            beneficiario.departamento_origen or 'N/A' }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Religión</p>
+                        <p class="text-sm font-medium">{{ beneficiario.religion or 'N/A' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-card border border-border/40 rounded-sm">
+                <div class="bg-secondary/30 px-6 py-3 border-b border-border/40">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Información
+                        Administrativa</h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">Fecha de
+                                Ingreso</p>
+                            <p class="text-sm font-medium">{{ beneficiario.fecha_ingreso }}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                                Autorización Visitas</p>
+                            <span
+                                class="text-xs px-2 py-0.5 rounded-full {{ 'bg-emerald-500/10 text-emerald-500' if beneficiario.autorizado_visitas else 'bg-destructive/10 text-destructive' }}">
+                                {{ 'Autorizado' if beneficiario.autorizado_visitas else 'Restringido' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-border/20">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-1">
+                            Observaciones Generales</p>
+                        <p class="text-sm text-muted-foreground italic">{{ beneficiario.observaciones or 'Sin
+                            observaciones registradas.' }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Widgets Rápidos -->
+        <div class="space-y-6">
+            <div class="bg-card border border-border/40 rounded-sm p-6 space-y-4">
+                <h3 class="text-xs font-bold uppercase tracking-widest text-accent-foreground/80">Acciones Médicas</h3>
+                <div class="grid grid-cols-1 gap-2">
+                    <a href="{{ url_for('signos_vitales.asignar', beneficiario_id=beneficiario.id) }}"
+                        class="w-full block text-left px-4 py-2 text-xs hover:bg-secondary rounded border border-border/20 transition-colors">
+                        Registrar Signos Vitales
+                    </a>
+                    <button
+                        class="w-full text-left px-4 py-2 text-xs hover:bg-secondary rounded border border-border/20 transition-colors">Ver
+                        Prescripciones</button>
+                    <button
+                        class="w-full text-left px-4 py-2 text-xs hover:bg-secondary rounded border border-border/20 transition-colors">Gestionar
+                        Patologías</button>
+                    <button
+                        class="w-full text-left px-4 py-2 text-xs hover:bg-secondary rounded border border-border/20 transition-colors">Ver
+                        Alergias</button>
+                </div>
+            </div>
+
+            <div class="bg-card border border-border/40 rounded-sm p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-accent-foreground/80">Visitantes</h3>
+                    <a href="{{ url_for('parentescos.asignar', beneficiario_id=beneficiario.id) }}"
+                       class="link text-[10px] font-bold">Parentesco</a>
+                </div>
+                <div class="space-y-3">
+                    {% for v in beneficiario.visitantes %}
+                    <div class="flex items-center gap-2">
+                        <div
+                            class="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-[10px] font-bold">
+                            {{ v.nombres[0] }}
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="text-xs font-medium truncate">{{ v.nombres }}</p>
+                            <p class="text-[9px] text-muted-foreground">Visitante</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-[10px] text-muted-foreground italic text-center py-4">No hay visitantes registrados.
+                    </p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="bg-card border border-border/40 rounded-sm p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-accent-foreground/80">Visitas</h3>
+                    <a href="{{ url_for('visitantes.registrar_visita', beneficiario_id=beneficiario.id) }}"
+                       class="link text-[10px] font-bold">Registrar</a>
+                </div>
+                <div class="space-y-3">
+                    {% for vis in beneficiario.visitas %}
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded bg-secondary/40 flex items-center justify-center text-[10px] font-bold">
+                                V
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium">
+                                    {{ vis.fecha_visita|formato_fecha }} —
+                                    {{ vis.hora_entrada|formato_hora }}
+                                </p>
+                                <p class="text-[9px] text-muted-foreground">
+                                    {{ vis.visitante.nombres }} {{ vis.visitante.apellidos }}
+                                </p>
+                            </div>
+                        </div>
+                        {% if vis.hora_salida %}
+                        <span class="text-[10px] px-2 py-0.5 rounded bg-secondary/20 border border-border/20">
+                            Salida {{ vis.hora_salida|formato_hora }}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-[10px] text-muted-foreground italic text-center py-4">No hay visitas registradas.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

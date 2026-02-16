@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Parentesco{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('parentescos.listar') }}" class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Crear Parentesco</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-6">
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nombre *</label>
+                <input type="text" name="nombre" required
+                       class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+            </div>
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Descripción</label>
+                <input type="text" name="descripcion"
+                       class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" name="contacto_emergencia" id="contacto_emergencia" value="1"
+                       class="w-4 h-4 rounded border-border/40 accent-primary">
+                <label for="contacto_emergencia" class="text-xs font-bold uppercase tracking-widest text-primary/80">Contacto de emergencia</label>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('parentescos.listar') }}"
+                   class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                        class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Asignar Medicamento{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="flex items-center gap-4">
+        <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+            class="text-muted-foreground hover:text-foreground">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M15 19l-7-7 7-7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-foreground">Asignar Medicamento (Prescripción)</h1>
+    </div>
+
+    <div class="bg-card border border-border/40 rounded-sm p-8 shadow-sm">
+        <form method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Medicamento *</label>
+                <select name="medicamento_id" required
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                    <option value="" disabled selected>Seleccione un medicamento...</option>
+                    {% for m in medicamentos %}
+                    <option value="{{ m.id }}">{{ m.nombre }} ({{ m.presentacion }} - {{ m.concentracion }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Dosis *</label>
+                    <input type="text" name="dosis" required placeholder="Ej: 1 tableta"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Frecuencia
+                        *</label>
+                    <input type="text" name="frecuencia" required placeholder="Ej: Cada 8 horas"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha Inicio
+                        *</label>
+                    <input type="date" name="fecha_inicio" required value="{{ hoy }}"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Fecha Fin
+                        (Opcional)</label>
+                    <input type="date" name="fecha_fin"
+                        class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm focus:ring-1 focus:ring-primary outline-none">
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Médico que
+                    Prescribe</label>
+                <input type="text" name="prescrito_por" placeholder="Nombre del médico"
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none">
+            </div>
+
+            <div class="space-y-2">
+                <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Observaciones /
+                    Indicaciones</label>
+                <textarea name="observaciones" rows="3"
+                    class="w-full bg-secondary/30 border-border/40 rounded p-3 text-sm outline-none"
+                    placeholder="Ingerir con alimentos, etc."></textarea>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{{ url_for('beneficiarios.perfil', id=beneficiario_id) }}"
+                    class="px-6 py-3 rounded text-sm font-medium border border-border/40 hover:bg-secondary/20 transition-colors">Cancelar</a>
+                <button type="submit"
+                    class="px-8 py-3 rounded text-sm font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:opacity-90 transition-opacity">
+                    Asignar Medicamento
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
