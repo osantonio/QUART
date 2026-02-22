@@ -1,3 +1,8 @@
 {
-    "json.schemaDownload.enable": true
+    "json.schemaDownload.enable": true,
+    "python.analysis.extraPaths": [
+        "${workspaceFolder}"
+    ],
+    "python.analysis.autoSearchPaths": true,
+    "python.defaultInterpreterPath": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
 }
