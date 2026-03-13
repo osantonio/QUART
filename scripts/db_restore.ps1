@@ -52,7 +52,7 @@ if ($DBContainerName -and (TestContainerRunning $DBContainerName)) {
   $args = @("exec","-i","-e","PGPASSWORD=$($db.Pass)",$DBContainerName,"psql","-h",$db.Host,"-p",$db.Port.ToString(),"-U",$db.User,"-d",$db.Database,"-v","ON_ERROR_STOP=1")
   Get-Content -Raw -Encoding UTF8 $FilePath | & docker @args | Out-Null
 } else {
-  $args = @("run","--rm","-i","-e","PGPASSWORD=$($db.Pass)","postgres:16-alpine","psql","-h",$hostForContainer,"-p",$db.Port.ToString(),"-U",$db.User,"-d",$db.Database,"-v","ON_ERROR_STOP=1")
+  $args = @("run","--rm","-i","-e","PGPASSWORD=$($db.Pass)","postgres:17-alpine","psql","-h",$hostForContainer,"-p",$db.Port.ToString(),"-U",$db.User,"-d",$db.Database,"-v","ON_ERROR_STOP=1")
   Get-Content -Raw -Encoding UTF8 $FilePath | & docker @args | Out-Null
 }
 Write-Output "Restauración completada desde: $FilePath"

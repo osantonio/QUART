@@ -1,5 +1,5 @@
 param(
-  [string]$OutputPath = $(Join-Path (Join-Path (Get-Location) "backups") ("dump_{0:yyyyMMdd_HHmmss}.sql" -f (Get-Date))),
+  [string]$OutputPath = $(Join-Path (Join-Path (Split-Path (Get-Location) -Parent) "backups") ("dump_{0:yyyyMMdd_HHmmss}.sql" -f (Get-Date))),
   [string]$DBContainerName = $env:DB_CONTAINER_NAME
 )
 function LoadDotEnv {
@@ -54,7 +54,7 @@ if ($DBContainerName -and (TestContainerRunning $DBContainerName)) {
   $proc = & docker @args
   $proc | Set-Content -Encoding utf8 -Path $OutputPath
 } else {
-  $args = @("run","--rm","-e","PGPASSWORD=$($db.Pass)","postgres:16-alpine","pg_dump","-h",$hostForContainer,"-p",$db.Port.ToString(),"-U",$db.User,"-d",$db.Database,"-F","p")
+  $args = @("run","--rm","-e","PGPASSWORD=$($db.Pass)","postgres:17-alpine","pg_dump","-h",$hostForContainer,"-p",$db.Port.ToString(),"-U",$db.User,"-d",$db.Database,"-F","p")
   $proc = & docker @args
   $proc | Set-Content -Encoding utf8 -Path $OutputPath
 }
