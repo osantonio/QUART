@@ -10,7 +10,7 @@ function LoadDotEnv {
       if ($kv.Length -eq 2) {
         $k = $kv[0].Trim()
         $v = $kv[1].Trim().Trim("'").Trim('"')
-        if (-not $env:$k) { Set-Item -Path env:$k -Value $v | Out-Null }
+        if (-not ${env:$k}) { Set-Item -Path "env:$k" -Value $v | Out-Null }
       }
     }
   }
@@ -41,7 +41,7 @@ function TestContainerRunning {
     return @($names) -contains $name
   } catch { return $false }
 }
-LoadDotEnv (Join-Path (Get-Location) ".env")
+LoadDotEnv (Join-Path (Split-Path (Get-Location) -Parent) ".env")
 if (-not $env:DATABASE_URL) { throw "Falta DATABASE_URL en entorno o .env" }
 $db = ParseDatabaseUrl $env:DATABASE_URL
 if (-not ($db.Scheme -like "postgres*")) { throw "Solo se soporta Postgres actualmente" }
