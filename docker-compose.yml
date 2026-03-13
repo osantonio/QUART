@@ -17,7 +17,7 @@ services:
 
   # --- BASE DE DATOS (POSTGRES 16) ---
   db_aps:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: APS_DB_CONTAINER
     restart: always
     environment:
