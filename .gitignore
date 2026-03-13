@@ -1,6 +1,13 @@
+# Entornos y configuraciones locales
 .env
-.vscode
-.venv
-node_modules
-__pycache__
-.pyc
+.vscode/
+.venv/
+
+# Dependencias
+node_modules/
+
+# Cachés de Python
+__pycache__/
+*/__pycache__/
+*.pyc
+*/.pyc
