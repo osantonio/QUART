@@ -3,7 +3,6 @@
 from app.models.roles import Rol, Permiso, RolPermiso, RolUsuario
 from app.models.usuario import Usuario
 from sqlmodel import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from app.config.database import AsyncSessionLocal
 
 async def configuracion_inicial(engine):

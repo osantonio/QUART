@@ -1,5 +1,5 @@
 
-from datetime import datetime, time as dtime
+from datetime import datetime
 from quart import Quart
 from app.config.database import init_db, engine
 from app.utils.auth import has_permission, es_admin, tiene_rol, tiene_acceso
