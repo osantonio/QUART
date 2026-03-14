@@ -17,7 +17,7 @@ services:
 
   # --- BASE DE DATOS (POSTGRES 16) ---
   db_aps:
-    image: postgres:18-alpine
+    image: postgres:16-alpine
     container_name: APS_DB_CONTAINER
     restart: always
     environment:
@@ -31,6 +31,11 @@ services:
       - "5432:5432"          # Abierto para tu pgAdmin de Windows
     networks:
       - aps_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   aps_network:
