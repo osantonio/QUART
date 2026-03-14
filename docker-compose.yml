@@ -11,7 +11,8 @@ services:
       JWT_ALGORITHM: ${JWT_ALGORITHM}
       JWT_EXPIRATION_MINUTES: ${JWT_EXPIRATION_MINUTES}
     depends_on:
-      - db_aps
+      db_aps:
+        condition: service_healthy
     networks:
       - aps_network
 
