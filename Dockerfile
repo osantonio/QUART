@@ -22,8 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Paso 6: Copiar todo el código de la aplicación al directorio de trabajo
 COPY . .
 
-# Paso 7: Exponer el puerto 5000 para la aplicación
-EXPOSE 5000
+# Paso 7: Exponer el puerto 4520 para la aplicación
+EXPOSE 4520
 
 # Paso 8: Comando para ejecutar la aplicación con Hypercorn (servidor ASGI para Quart)
-CMD ["hypercorn", "main:app", "--bind", "0.0.0.0:5000"]
+CMD ["hypercorn", "main:app", "--bind", "0.0.0.0:4520"]

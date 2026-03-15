@@ -15,7 +15,7 @@ services:
     networks:
       - aps_network
     ports:
-      - "5000:5000"
+      - "4520:4520"
 
   # --- BASE DE DATOS (POSTGRES 16) ---
   db_aps:
