@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Editar Permiso - Admin{% endblock %}
 
@@ -24,6 +25,7 @@
     <!-- Formulario: Estructura Atenuada -->
     <div class="border border-border rounded-sm bg-background overflow-hidden">
         <form method="POST" class="p-10 space-y-8">
+            {{ csrf_field() }}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-3">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Módulo

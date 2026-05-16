@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Editar Permisos: {{ rol.name }} - Admin{% endblock %}
 
@@ -40,6 +41,7 @@
 
     <!-- Tabla: Lista de Privilegios -->
     <form id="permissions-form" method="POST" class="border border-border/40 rounded-sm bg-background overflow-hidden">
+            {{ csrf_field() }}
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="border-b border-border/40 bg-secondary/[0.03]">

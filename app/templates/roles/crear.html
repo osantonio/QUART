@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Crear Rol - Admin{% endblock %}
 
@@ -24,6 +25,7 @@
     <!-- Formulario: Estructura Atenuada -->
     <div class="border border-border/40 rounded-sm bg-background overflow-hidden">
         <form method="POST" class="p-10 space-y-8">
+            {{ csrf_field() }}
             <div class="space-y-8">
                 <div class="space-y-3">
                     <label

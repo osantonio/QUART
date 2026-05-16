@@ -53,9 +53,9 @@ async def perfil(usuario_id):
                 fecha_nac = datetime.strptime(usuario.fecha_nacimiento, "%Y-%m-%d")
                 hoy = datetime.now()
                 edad = hoy.year - fecha_nac.year - ((hoy.month, hoy.day) < (fecha_nac.month, fecha_nac.day))
-            except:
+            except ValueError:
                 pass
-        
+
         return await render_template(
             "usuarios/perfil.html",
             usuario=usuario,
@@ -101,7 +101,7 @@ async def editar(usuario_id):
                         if os.path.exists(old_path):
                             try:
                                 os.remove(old_path)
-                            except:
+                            except OSError:
                                 pass
                     usuario.foto_perfil = nuevo_nombre
             

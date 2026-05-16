@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Registrar Signos Vitales{% endblock %}
 
@@ -16,6 +17,7 @@
 
     <div class="bg-card border border-border/40 rounded-sm p-8 shadow-sm">
         <form method="POST" class="space-y-8">
+            {{ csrf_field() }}
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="space-y-4 p-4 border border-border/40 rounded-sm bg-secondary/10">

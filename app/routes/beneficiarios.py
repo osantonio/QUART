@@ -1,6 +1,7 @@
 from quart import Blueprint, render_template, request, redirect, url_for, flash, session
 from app.config import get_session
 from app.utils.auth import permission_required
+from app.utils.red import extraer_ip
 from app.models.beneficiarios import Beneficiario
 from app.models.historia_clinica import HistoriaClinica
 from app.models.visitantes import Visitante, Visita
@@ -69,7 +70,7 @@ async def crear():
             if datos.get("estatura"):
                 datos["estatura"] = float(datos["estatura"])
                 
-            await ServicioBeneficiarios.crear_beneficiario(datos, usuario_id)
+            await ServicioBeneficiarios.crear_beneficiario(datos, usuario_id, ip_address=extraer_ip(request))
             await flash("Beneficiario registrado exitosamente", "success")
             return redirect(url_for("beneficiarios.listar"))
         except Exception as e:
@@ -113,7 +114,7 @@ async def editar(id):
             if datos.get("estatura"):
                 datos["estatura"] = float(datos["estatura"])
                 
-            await ServicioBeneficiarios.actualizar_beneficiario(id, datos, usuario_id)
+            await ServicioBeneficiarios.actualizar_beneficiario(id, datos, usuario_id, ip_address=extraer_ip(request))
             await flash("Información actualizada exitosamente", "success")
             return redirect(url_for("beneficiarios.perfil", id=id))
         except Exception as e:
@@ -205,7 +206,7 @@ async def archivar(id):
         datos = dict(form)
         usuario_id = session.get("user_id")
         try:
-            await ServicioBeneficiarios.archivar_beneficiario(id, datos, usuario_id)
+            await ServicioBeneficiarios.archivar_beneficiario(id, datos, usuario_id, ip_address=extraer_ip(request))
             await flash("Beneficiario archivado correctamente", "warning")
             return redirect(url_for("beneficiarios.listar"))
         except Exception as e:

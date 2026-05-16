@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Asignar Roles: {{ usuario.username }} - Admin{% endblock %}
 
@@ -27,6 +28,7 @@
 
     <!-- Selección de Roles: Flexbox Layout -->
     <form id="roles-form" method="POST" class="flex flex-wrap gap-6">
+            {{ csrf_field() }}
         {% for rol in roles %}
         <label class="cursor-pointer group flex-1 min-w-[340px]">
             <input type="checkbox" name="roles" value="{{ rol.id }}" class="peer hidden" {% if rol.id in user_role_ids

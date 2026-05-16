@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Catálogo de Rutas - Admin{% endblock %}
 
@@ -74,6 +75,7 @@
             class="bg-card w-full max-w-md rounded-sm border border-border shadow-2xl p-6 animate-in zoom-in duration-200">
             <h2 class="text-xl font-bold text-foreground mb-4">Crear Nueva Ruta</h2>
             <form action="{{ url_for('admin.crear_permiso') }}" method="POST" class="space-y-4">
+            {{ csrf_field() }}
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Módulo</label>
                     <input type="text" name="module" required

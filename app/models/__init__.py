@@ -2,6 +2,7 @@
 
 from app.models.usuario import Usuario
 from app.models.roles import Rol, Permiso, RolUsuario, RolPermiso
+from app.models.login_intento import LoginIntento
 from app.models.beneficiarios import (
     Beneficiario, Alergia, BeneficiarioAlergia, Patologia, BeneficiarioPatologia,
     HistorialPatologia, Medicamento, MedicamentoBeneficiario, HistorialPrescripcion,
@@ -14,6 +15,7 @@ from app.models.parentescos import Parentesco, RelacionParentesco
 
 models = [
     Usuario,
+    LoginIntento,
     Rol,
     Permiso,
     RolUsuario,

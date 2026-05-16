@@ -13,18 +13,18 @@ class ServicioBeneficiarios:
     
     @staticmethod
     async def registrar_auditoria(
-        db, 
-        beneficiario_id: int, 
-        usuario_id: int, 
-        tabla: str, 
+        db,
+        beneficiario_id: int,
+        usuario_id: int,
+        tabla: str,
         operacion: str,
         registro_id: Optional[int] = None,
         campo: Optional[str] = None,
         anterior: Optional[str] = None,
         nuevo: Optional[str] = None,
-        motivo: Optional[str] = None
+        motivo: Optional[str] = None,
+        ip_address: Optional[str] = None,
     ):
-        """Helper para registrar cambios en la historia clínica"""
         auditoria = HistoriaClinica(
             beneficiario_id=beneficiario_id,
             modificado_por=usuario_id,
@@ -34,12 +34,13 @@ class ServicioBeneficiarios:
             valor_anterior=str(anterior) if anterior is not None else None,
             valor_nuevo=str(nuevo) if nuevo is not None else None,
             tipo_operacion=operacion,
-            motivo=motivo
+            motivo=motivo,
+            ip_address=ip_address,
         )
         db.add(auditoria)
 
     @staticmethod
-    async def crear_beneficiario(datos: Dict[str, Any], usuario_id: int) -> Beneficiario:
+    async def crear_beneficiario(datos: Dict[str, Any], usuario_id: int, ip_address: Optional[str] = None) -> Beneficiario:
         async with AsyncSessionLocal() as db:
             # Validaciones básicas
             if not datos.get("identificacion") or not datos.get("nombres"):
@@ -57,7 +58,7 @@ class ServicioBeneficiarios:
 
             # Registrar en historia clínica
             await ServicioBeneficiarios.registrar_auditoria(
-                db, nuevo.id, usuario_id, "Beneficiario", "Creación", nuevo.id
+                db, nuevo.id, usuario_id, "Beneficiario", "Creación", nuevo.id, ip_address=ip_address
             )
 
             await db.commit()
@@ -65,7 +66,7 @@ class ServicioBeneficiarios:
             return nuevo
 
     @staticmethod
-    async def actualizar_beneficiario(beneficiario_id: int, datos: Dict[str, Any], usuario_id: int) -> Beneficiario:
+    async def actualizar_beneficiario(beneficiario_id: int, datos: Dict[str, Any], usuario_id: int, ip_address: Optional[str] = None) -> Beneficiario:
         async with AsyncSessionLocal() as db:
             stmt = select(Beneficiario).where(Beneficiario.id == beneficiario_id)
             result = await db.execute(stmt)
@@ -79,8 +80,8 @@ class ServicioBeneficiarios:
                 if valor_anterior != nuevo_valor:
                     # Registrar cambio en historia clínica
                     await ServicioBeneficiarios.registrar_auditoria(
-                        db, beneficiario_id, usuario_id, "Beneficiario", "Modificación", 
-                        beneficiario_id, campo, valor_anterior, nuevo_valor
+                        db, beneficiario_id, usuario_id, "Beneficiario", "Modificación",
+                        beneficiario_id, campo, valor_anterior, nuevo_valor, ip_address=ip_address
                     )
                     setattr(beneficiario, campo, nuevo_valor)
 
@@ -221,7 +222,7 @@ class ServicioBeneficiarios:
             return original
 
     @staticmethod
-    async def archivar_beneficiario(beneficiario_id: int, datos_egreso: Dict[str, Any], usuario_id: int):
+    async def archivar_beneficiario(beneficiario_id: int, datos_egreso: Dict[str, Any], usuario_id: int, ip_address: Optional[str] = None):
         from app.models.beneficiarios import ExBeneficiarios
         import json
         
@@ -263,8 +264,9 @@ class ServicioBeneficiarios:
 
             # 4. Auditoría clínica final
             await ServicioBeneficiarios.registrar_auditoria(
-                db, b.id, usuario_id, "Beneficiario", "Egreso/Archivado", 
-                b.id, "estado", "Activo", "Archivado", datos_egreso.get("motivo_egreso")
+                db, b.id, usuario_id, "Beneficiario", "Egreso/Archivado",
+                b.id, "estado", "Activo", "Archivado", datos_egreso.get("motivo_egreso"),
+                ip_address=ip_address,
             )
 
             # 5. Eliminar (o marcar como inactivo) el registro original

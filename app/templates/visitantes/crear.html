@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Crear Visitante{% endblock %}
 
@@ -16,6 +17,7 @@
 
     <div class="bg-card border border-border/40 rounded-sm p-6">
         <form method="POST" class="space-y-6">
+            {{ csrf_field() }}
             {% if beneficiario_id %}
             <input type="hidden" name="beneficiario_id" value="{{ beneficiario_id }}">
             {% endif %}

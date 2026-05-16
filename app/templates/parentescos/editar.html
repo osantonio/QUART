@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Editar Parentesco{% endblock %}
 
@@ -15,6 +16,7 @@
 
     <div class="bg-card border border-border/40 rounded-sm p-6">
         <form method="POST" class="space-y-6">
+            {{ csrf_field() }}
             <div class="space-y-2">
                 <label class="text-xs font-bold uppercase tracking-widest text-muted-foreground">Nombre *</label>
                 <input type="text" name="nombre" value="{{ p.nombre }}" required

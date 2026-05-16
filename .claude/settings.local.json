@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m alembic --version)",
+      "Bash(del \"E:\\\\CODE\\\\QUART\\\\app\\\\config\\\\auth.py\")"
+    ]
+  }
+}

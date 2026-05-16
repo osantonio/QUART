@@ -1,3 +1,4 @@
+import asyncio
 from datetime import date, datetime
 import logging
 import time
@@ -12,7 +13,8 @@ logger = logging.getLogger(__name__)
 
 imc_bp = Blueprint("imc", __name__, url_prefix="/imc")
 
-_imc_cache = {"timestamp": 0.0, "data": None, "count": 0}
+_imc_cache: dict = {"timestamp": 0.0, "data": None, "count": 0}
+_imc_lock = asyncio.Lock()
 
 
 def _calcular_edad(fecha_nacimiento: date) -> int:
@@ -41,12 +43,13 @@ async def imc_index():
             total_stmt = select(func.count(Beneficiario.id))
             total_beneficiarios = (await db.execute(total_stmt)).scalar_one()
 
-            if total_beneficiarios > 100 and _imc_cache["data"]:
-                if time.time() - _imc_cache["timestamp"] < 300:
-                    data = _imc_cache["data"]
-                    if quiere_json:
-                        return jsonify(data)
-                    return await render_template("signos_vitales/imc/imc.html", **data)
+            async with _imc_lock:
+                if total_beneficiarios > 100 and _imc_cache["data"]:
+                    if time.time() - _imc_cache["timestamp"] < 300:
+                        data = _imc_cache["data"]
+                        if quiere_json:
+                            return jsonify(data)
+                        return await render_template("signos_vitales/imc/imc.html", **data)
 
             sub = (
                 select(
@@ -139,9 +142,10 @@ async def imc_index():
         }
 
         if total_beneficiarios > 100:
-            _imc_cache["timestamp"] = time.time()
-            _imc_cache["data"] = data
-            _imc_cache["count"] = total_beneficiarios
+            async with _imc_lock:
+                _imc_cache["timestamp"] = time.time()
+                _imc_cache["data"] = data
+                _imc_cache["count"] = total_beneficiarios
 
         if quiere_json:
             return jsonify(data)

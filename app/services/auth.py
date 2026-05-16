@@ -1,4 +1,5 @@
 from app.models.usuario import Usuario
+from app.models.roles import Rol, RolUsuario
 from app.config.database import AsyncSessionLocal
 from app.utils.exceptions import ValidationError
 from sqlmodel import select
@@ -62,9 +63,17 @@ class AuthService:
             nuevo_usuario.set_password(password)
 
             db_session.add(nuevo_usuario)
+            await db_session.flush()
+
+            rol_general = (await db_session.execute(
+                select(Rol).where(Rol.name == "general")
+            )).scalar_one_or_none()
+            if rol_general:
+                db_session.add(RolUsuario(usuario_id=nuevo_usuario.id, role_id=rol_general.id))
+
             await db_session.commit()
             await db_session.refresh(nuevo_usuario)
-            
+
             return nuevo_usuario
 
     @staticmethod

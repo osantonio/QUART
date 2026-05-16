@@ -1,12 +1,15 @@
-# ./main.py
+# main.py — producción (Dokploy / Hypercorn)
+
+import os
+
+from hypercorn.config import Config
 
 from app import create_app
-import os
 
 app = create_app()
 
-if __name__ == "__main__":
-    # Escuchar en 0.0.0.0 es obligatorio en Docker/Dokploy
-    # El puerto lo ideal es que sea dinámico o coincida con Dokploy
-    port = int(os.environ.get("PORT", 5000)) 
-    app.run(host='0.0.0.0', port=port, debug=False)
+config = Config()
+config.bind = [f"0.0.0.0:{os.environ.get('PORT', 2000)}"]
+config.worker_count = int(os.environ.get('WORKERS', 2))
+config.accesslog = "-"
+config.errorlog = "-"

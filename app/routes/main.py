@@ -6,14 +6,23 @@ from app.config import get_session
 from app.models.beneficiarios import Beneficiario
 from app.models import Usuario
 from app.models.visitantes import Visitante
-from sqlmodel import select
+from sqlmodel import select, func
+from app.config.database import AsyncSessionLocal
 from datetime import date
 
 bp = Blueprint("main", __name__)
 
 
+async def _hay_usuarios() -> bool:
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(select(func.count()).select_from(Usuario))
+        return (result.scalar() or 0) > 0
+
+
 @bp.route("/")
 async def index():
+    if not await _hay_usuarios():
+        return redirect(url_for("configuracion.index"))
     return await render_template("index.html")
 
 

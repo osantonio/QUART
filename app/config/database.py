@@ -30,13 +30,11 @@ async def get_session() -> AsyncSession:
     async with AsyncSessionLocal() as session:
         yield session
 
-# Función para crear las tablas al iniciar
 async def init_db():
-    # Importamos los modelos aquí para asegurar que estén registrados en SQLModel.metadata
+    # create_all garantiza tablas en dev; en producción Alembic maneja el schema
     from app.models import models  # noqa: F401
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
-    
-    # Configuración inicial de datos maestros
+
     from app.config import configuracion_inicial
     await configuracion_inicial(engine)

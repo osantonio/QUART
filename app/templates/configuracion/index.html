@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
+
+{% block title %}Configuración inicial{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-16">
+    <div class="bg-card border border-border rounded-xl p-8 shadow-sm">
+
+        <div class="text-center mb-6">
+            <div class="mx-auto w-10 h-10 rounded bg-primary text-primary-foreground flex items-center justify-center text-lg font-bold mb-3">
+                ⚕
+            </div>
+            <h1 class="text-2xl font-bold text-foreground">Configuración inicial</h1>
+            <p class="text-sm text-muted-foreground mt-1">Crea el primer usuario administrador del sistema</p>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            {{ csrf_field() }}
+
+            <div>
+                <label for="nombres" class="block text-sm font-medium text-muted-foreground mb-1">
+                    Nombres <span class="text-destructive-foreground">*</span>
+                </label>
+                <input type="text" id="nombres" name="nombres" required autofocus
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <div>
+                <label for="apellidos" class="block text-sm font-medium text-muted-foreground mb-1">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos"
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-muted-foreground mb-1">
+                    Username <span class="text-destructive-foreground">*</span>
+                </label>
+                <input type="text" id="username" name="username" required pattern="[a-zA-Z0-9_]+"
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-muted-foreground mb-1">
+                    Email <span class="text-destructive-foreground">*</span>
+                </label>
+                <input type="email" id="email" name="email" required
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-muted-foreground mb-1">
+                    Contraseña <span class="text-destructive-foreground">*</span>
+                </label>
+                <input type="password" id="password" name="password" required minlength="8"
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <div>
+                <label for="confirm_password" class="block text-sm font-medium text-muted-foreground mb-1">
+                    Confirmar contraseña <span class="text-destructive-foreground">*</span>
+                </label>
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="8"
+                    class="w-full bg-background border border-input rounded-md px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors">
+            </div>
+
+            <button type="submit" class="btn-primary w-full py-2.5 rounded-md text-sm font-semibold mt-2">
+                Configurar sistema
+            </button>
+        </form>
+
+        <p class="mt-5 text-xs text-center text-muted-foreground">
+            Este usuario tendrá acceso total al panel de administración.
+        </p>
+    </div>
+</div>
+{% endblock %}

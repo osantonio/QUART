@@ -11,7 +11,5 @@ class Config:
         raise ValueError("La variable de entorno SECRET_KEY debe estar configurada")
     DATABASE_URL = os.getenv("DATABASE_URL")
     DEBUG = os.getenv("DEBUG") == "True"
-    JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-    JWT_EXPIRATION_MINUTES = int(os.getenv("JWT_EXPIRATION_MINUTES", "30"))
     
 config = Config()

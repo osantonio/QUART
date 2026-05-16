@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros/csrf.html" import csrf_field %}
 
 {% block title %}Confirmar eliminación{% endblock %}
 
@@ -23,6 +24,7 @@
                Cancelar
             </a>
             <form method="POST" action="{{ url_for('parentescos.eliminar', id=p.id) }}">
+            {{ csrf_field() }}
                 <button type="submit"
                         class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-sm border border-border/40 bg-destructive/90 text-destructive-foreground hover:bg-destructive transition-colors">
                     Eliminar definitivamente
